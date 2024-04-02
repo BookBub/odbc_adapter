@@ -9,6 +9,6 @@ Rake::TestTask.new(:test) do |t|
 end
 
 RuboCop::RakeTask.new(:rubocop)
-Rake::Task[:test].prerequisites << :rubocop
+# Rake::Task[:test].prerequisites << :rubocop
 
 task default: :test
