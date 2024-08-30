@@ -82,7 +82,7 @@ module ActiveRecord
         super(connection, logger, config)
         @database_metadata = database_metadata
         # This sets the @connection ivar to the old expected value on newer versions of Rails (7.1+)
-        @connection ||= @raw_connection
+        @connection ||= @unconfigured_connection
       end
 
       # Returns the human-readable name of the adapter.
