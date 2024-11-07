@@ -9,8 +9,11 @@ module ODBCAdapter
     # Returns the number of rows affected.
     def execute(sql, name = nil, binds = [])
       log(sql, name) do
-        sql = bind_params(binds, sql) if prepared_statements
-        @raw_connection.do(sql)
+        if prepared_statements
+          @connection.do(prepare_statement_sub(sql), *prepared_binds(binds))
+        else
+          @connection.do(sql)
+        end
       end
     end
 
@@ -29,8 +32,12 @@ module ODBCAdapter
     # the executed +sql+ statement.
     def internal_exec_query(sql, name = 'SQL', binds = [], prepare: false) # rubocop:disable Lint/UnusedMethodArgument
       log(sql, name) do
-        sql = bind_params(binds, sql) if prepared_statements
-        stmt =  @raw_connection.run(sql)
+        stmt =
+          if prepared_statements
+            @connection.do(prepare_statement_sub(sql), *prepared_binds(binds))
+          else
+            @connection.run(sql)
+          end
 
         columns = stmt.columns
         values  = stmt.to_a
@@ -186,15 +193,12 @@ module ODBCAdapter
       col_name == 'id' ? false : result
     end
 
+    def prepare_statement_sub(sql)
+      sql.gsub(/\$\d+/, '?')
+    end
+
     def prepared_binds(binds)
-      binds.map do |bind|
-        if bind.respond_to?(:value_for_database)
-          bind.value_for_database
-        else
-          bind
-        end
-      end
-        .map { |bind| type_cast(bind) }
+      binds.map(&:value_for_database).map { |bind| _type_cast(bind) }
     end
   end
 end
