@@ -61,6 +61,7 @@ module ActiveRecord
         end
 
         configure_time_options(@raw_connection)
+      end
 
       # Returns the human-readable name of the adapter.
       def adapter_name
@@ -167,7 +168,9 @@ module ActiveRecord
 
       # Ensure ODBC is mapping time-based fields to native ruby objects
       def configure_time_options(connection)
-        connection.use_time = true
+        if connection.respond_to?(:use_time)
+          connection.use_time = true
+        end
       end
     end
   end
