@@ -77,9 +77,9 @@ module ActiveRecord
       # when a connection is first established.
       attr_reader :database_metadata
 
-      def initialize(connection, logger, config, database_metadata)
-        configure_time_options(connection)
-        super(connection, logger, config)
+      def initialize(config_or_deprecated_connection, deprecated_logger = nil, deprecated_connection_options = nil, deprecated_config = nil)
+        configure_time_options(config_or_deprecated_connection)
+        super(config_or_deprecated_connection, deprecated_logger, deprecated_connection_options, deprecated_config)
         @database_metadata = database_metadata
         # This sets the @connection ivar to the old expected value on newer versions of Rails (7.1+)
         @connection ||= @unconfigured_connection
@@ -195,7 +195,9 @@ module ActiveRecord
 
       # Ensure ODBC is mapping time-based fields to native ruby objects
       def configure_time_options(connection)
-        connection.use_time = true
+        if connection.respond_to?(:use_time)
+          connection.use_time = true
+        end
       end
     end
   end
