@@ -81,8 +81,8 @@ module ActiveRecord
         configure_time_options(config_or_deprecated_connection)
         super(config_or_deprecated_connection, deprecated_logger, deprecated_connection_options, deprecated_config)
         @database_metadata = database_metadata
-        # This sets the @connection ivar to the old expected value on newer versions of Rails (7.1+)
-        @connection ||= @unconfigured_connection
+        # This sets the @raw_connection ivar to the old expected value on newer versions of Rails (7.1+)
+        @raw_connection ||= config_or_deprecated_connection
       end
 
       # Returns the human-readable name of the adapter.
@@ -102,20 +102,20 @@ module ActiveRecord
       # includes checking whether the database is actually capable of
       # responding, i.e. whether the connection isn't stale.
       def active?
-        @connection.connected?
+        @raw_connection.connected?
       end
 
       # Disconnects from the database if already connected, and establishes a
       # new connection with the database.
       def reconnect!
         disconnect!
-        @connection =
+        @raw_connection =
           if @config.key?(:dsn)
             ODBC.connect(@config[:dsn], @config[:username], @config[:password])
           else
             ODBC::Database.new.drvconnect(@config[:driver])
           end
-        configure_time_options(@connection)
+        configure_time_options(@raw_connection)
         super
       end
       alias reset! reconnect!
@@ -123,7 +123,7 @@ module ActiveRecord
       # Disconnects from the database if already connected. Otherwise, this
       # method does nothing.
       def disconnect!
-        @connection.disconnect if @connection.connected?
+        @raw_connection.disconnect if @raw_connection.connected?
       end
 
       # Build a new column object from the given options. Effectively the same
