@@ -10,9 +10,9 @@ module ODBCAdapter
     def execute(sql, name = nil, binds = [])
       log(sql, name) do
         if prepared_statements
-          @connection.do(prepare_statement_sub(sql), *prepared_binds(binds))
+          @raw_connection.do(prepare_statement_sub(sql), *prepared_binds(binds))
         else
-          @connection.do(sql)
+          @raw_connection.do(sql)
         end
       end
     end
@@ -34,9 +34,9 @@ module ODBCAdapter
       log(sql, name) do
         stmt =
           if prepared_statements
-            @connection.do(prepare_statement_sub(sql), *prepared_binds(binds))
+            @raw_connection.do(prepare_statement_sub(sql), *prepared_binds(binds))
           else
-            @connection.run(sql)
+            @raw_connection.run(sql)
           end
 
         columns = stmt.columns
