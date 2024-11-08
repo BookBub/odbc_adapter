@@ -8,12 +8,10 @@ module ODBCAdapter
     # Executes the SQL statement in the context of this connection.
     # Returns the number of rows affected.
     def execute(sql, name = nil, binds = [])
+      sql = transform_query(sql)
       log(sql, name) do
-        if prepared_statements
-          @raw_connection.do(prepare_statement_sub(sql), *prepared_binds(binds))
-        else
-          @raw_connection.do(sql)
-        end
+        sql = bind_params(binds, sql) if prepared_statements
+        @raw_connection.do(sql)
       end
     end
 
@@ -31,13 +29,26 @@ module ODBCAdapter
     # +binds+ as the bind substitutes. +name+ is logged along with
     # the executed +sql+ statement.
     def internal_exec_query(sql, name = 'SQL', binds = [], prepare: false) # rubocop:disable Lint/UnusedMethodArgument
+      attrs = @config[:conn_str].split(';').map { |option| option.split('=', 2) }.to_h
+      odbc_module = attrs['ENCODING'] == 'utf8' ? ODBC_UTF8 : ODBC
+
+      sql = transform_query(sql)
       log(sql, name) do
-        stmt =
-          if prepared_statements
-            @raw_connection.do(prepare_statement_sub(sql), *prepared_binds(binds))
+        sql = bind_params(binds, sql) if prepared_statements
+
+        begin
+          stmt =  @raw_connection.run(sql)
+        rescue odbc_module::Error => e
+          msg = e.message.gsub(/\s+/, " ")
+
+          if msg.match(ERR_CONNECTION_AUTHENTICATION_EXPIRED) || msg.match(ERR_SESSION_NO_LONGER_EXISTS)
+            Rails.logger.warn 'ODBCAdapter: Session or authentication has expired. Attempting to reconnect.'
+            reconnect!
+            stmt = @raw_connection.run(sql)
           else
-            @raw_connection.run(sql)
+            raise e
           end
+        end
 
         columns = stmt.columns
         values  = stmt.to_a
