@@ -11,7 +11,9 @@ module ODBCAdapter
       sql = transform_query(sql)
       log(sql, name) do
         sql = bind_params(binds, sql) if prepared_statements
-        @raw_connection.do(sql)
+        with_raw_connection do |conn|
+          conn.do(sql)
+        end
       end
     end
 
@@ -24,14 +26,18 @@ module ODBCAdapter
         sql = bind_params(binds, sql) if prepared_statements
 
         begin
-          stmt =  @raw_connection.run(sql)
+          stmt = with_raw_connection do |conn|
+            conn.run(sql)
+          end
         rescue odbc_module::Error => e
           msg = e.message.gsub(/\s+/, " ")
 
           if msg.match(ERR_CONNECTION_AUTHENTICATION_EXPIRED) || msg.match(ERR_SESSION_NO_LONGER_EXISTS)
             Rails.logger.warn 'ODBCAdapter: Session or authentication has expired. Attempting to reconnect.'
             reconnect!
-            stmt = @raw_connection.run(sql)
+            stmt = with_raw_connection do |conn|
+              conn.run(sql)
+            end
           else
             raise e
           end
@@ -57,20 +63,26 @@ module ODBCAdapter
 
     # Begins the transaction (and turns off auto-committing).
     def begin_db_transaction
-      @raw_connection.autocommit = false
+      with_raw_connection do |connection|
+        connection.autocommit = false
+      end
     end
 
     # Commits the transaction (and turns on auto-committing).
     def commit_db_transaction
-      @raw_connection.commit
-      @raw_connection.autocommit = true
+      with_raw_connection do |connection|
+        connection.commit
+        connection.autocommit = true
+      end
     end
 
     # Rolls back the transaction (and turns on auto-committing). Must be
     # done if the transaction block raises an exception or returns false.
     def exec_rollback_db_transaction
-      @raw_connection.rollback
-      @raw_connection.autocommit = true
+      with_raw_connection do |connection|
+        connection.rollback
+        connection.autocommit = true
+      end
     end
 
     # Returns the default sequence name for a table.
