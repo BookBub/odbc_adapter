@@ -85,7 +85,7 @@ module ActiveRecord
       # includes checking whether the database is actually capable of
       # responding, i.e. whether the connection isn't stale.
       def active?
-        @raw_connection.connected?
+        connected?
       end
 
       # Disconnects from the database if already connected, and establishes a
