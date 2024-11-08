@@ -81,8 +81,6 @@ module ActiveRecord
         configure_time_options(config_or_deprecated_connection)
         super(config_or_deprecated_connection, deprecated_logger, deprecated_connection_options, deprecated_config)
         @database_metadata = database_metadata
-        # This sets the @raw_connection ivar to the old expected value on newer versions of Rails (7.1+)
-        @raw_connection ||= config_or_deprecated_connection
       end
 
       # Returns the human-readable name of the adapter.
