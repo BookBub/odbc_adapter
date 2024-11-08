@@ -211,5 +211,13 @@ module ODBCAdapter
     def prepared_binds(binds)
       binds.map(&:value_for_database).map { |bind| _type_cast(bind) }
     end
+
+    def bind_params(binds, sql)
+      prepared_binds = *prepared_binds(binds)
+      prepared_binds.each.with_index(1) do |val, ind|
+        sql = sql.gsub("$#{ind}", "'#{val}'")
+      end
+      sql
+    end
   end
 end
