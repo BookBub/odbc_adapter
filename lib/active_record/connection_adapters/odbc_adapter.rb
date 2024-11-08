@@ -100,28 +100,7 @@ module ActiveRecord
       # includes checking whether the database is actually capable of
       # responding, i.e. whether the connection isn't stale.
       def active?
-        @raw_connection.connected?
-      end
-
-      # Disconnects from the database if already connected, and establishes a
-      # new connection with the database.
-      def reconnect!
-        disconnect!
-        @raw_connection =
-          if @config.key?(:dsn)
-            ODBC.connect(@config[:dsn], @config[:username], @config[:password])
-          else
-            ODBC::Database.new.drvconnect(@config[:driver])
-          end
-        configure_time_options(@raw_connection)
-        super
-      end
-      alias reset! reconnect!
-
-      # Disconnects from the database if already connected. Otherwise, this
-      # method does nothing.
-      def disconnect!
-        @raw_connection.disconnect if @raw_connection.connected?
+        connected?
       end
 
       # Build a new column object from the given options. Effectively the same
