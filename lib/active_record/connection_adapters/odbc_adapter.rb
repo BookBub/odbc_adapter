@@ -120,6 +120,14 @@ module ActiveRecord
         false
       end
 
+      # Disconnects from the database if already connected. Otherwise, this
+      # method does nothing.
+      def disconnect!
+        with_raw_connection do |connection|
+          connection.disconnect if connection.connected?
+        end
+      end
+
       protected
 
       # Build the type map for ActiveRecord
@@ -171,6 +179,17 @@ module ActiveRecord
         if connection.respond_to?(:use_time)
           connection.use_time = true
         end
+      end
+
+      def reconnect
+        disconnect!
+        @raw_connection =
+          if @config.key?(:dsn)
+            ::ODBCAdapter::ConnectCommon.odbc_dsn_connection(@config)[0]
+          else
+            ::ODBCAdapter::ConnectCommon.odbc_conn_str_connection(@config)[0]
+          end
+        configure_time_options(@raw_connection)
       end
     end
   end
