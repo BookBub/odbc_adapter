@@ -12,14 +12,18 @@ jobs:
       fail-fast: false
       matrix:
         ruby: [3.2]
-    services:
-      mysql:
-        image: mysql:8
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: true
-          MYSQL_DATABASE: odbc_test
-        ports: ['3306:3306']
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    # services:
+    #   mysql:
+    #     image: mysql:8
+    #     env:
+    #       MYSQL_ALLOW_EMPTY_PASSWORD: true
+    #       MYSQL_DATABASE: odbc_test
+    #     ports: ['3306:3306']
+    #     options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    env:
+      DB_DATABASE: odbc_test
+      DB_USER: root
+      DB_PASSWORD: root
     steps:
       - uses: actions/checkout@v3
       - name: Set up Ruby
@@ -29,10 +33,14 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
       - name: Install ODBC drivers
         run: sudo apt-get install unixodbc unixodbc-dev mysql-client
+      - name: Set up MySQL
+        run: |
+          sudo /etc/init.d/mysql start
+          mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
       - name: Install dependencies
         run: bundle install
       - name: Run tests
         env:
           DB: "mysql"
-          CONN_STR: "DRIVER=MySQL;SERVER=localhost;DATABASE=odbc_test;USER=root;PASSWORD=;"
+          CONN_STR: "DRIVER=MySQL;SERVER=localhost;DATABASE=${{ env.DB_DATABASE }};USER=${{ env.DB_USER }};PASSWORD=${{ env.DB_PASSWORD }};"
         run: bundle exec rake test
