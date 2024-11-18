@@ -14,14 +14,14 @@ options[:dsn]      = 'ODBCAdapterPostgreSQLTest' if options.values_at(:conn_str,
 ActiveRecord::Base.establish_connection(options)
 
 ActiveRecord::Schema.define do
-  create_table :users do |t|
+  create_table(:users, force: true) do |t|
     t.string :first_name
     t.string :last_name
     t.integer :letters
     t.timestamps null: false
   end
 
-  create_table :todos do |t|
+  create_table(:todos, force: true) do |t|
     t.integer :user_id
     t.text :body
     t.boolean :published, null: false, default: false
