@@ -13,21 +13,21 @@ options[:dsn]      = 'ODBCAdapterPostgreSQLTest' if options.values_at(:conn_str,
 
 ActiveRecord::Base.establish_connection(options)
 
-ActiveRecord::Schema.define do
-  create_table(:users) do |t|
-    t.string :first_name
-    t.string :last_name
-    t.integer :letters
-    t.timestamps null: false
-  end
+# ActiveRecord::Schema.define do
+#   create_table(:users) do |t|
+#     t.string :first_name
+#     t.string :last_name
+#     t.integer :letters
+#     t.timestamps null: false
+#   end
 
-  create_table(:todos) do |t|
-    t.integer :user_id
-    t.text :body
-    t.boolean :published, null: false, default: false
-    t.timestamps null: false
-  end
-end
+#   create_table(:todos) do |t|
+#     t.integer :user_id
+#     t.text :body
+#     t.boolean :published, null: false, default: false
+#     t.timestamps null: false
+#   end
+# end
 
 class User < ActiveRecord::Base
   has_many :todos, dependent: :destroy
@@ -46,8 +46,22 @@ class User < ActiveRecord::Base
   )
 end
 
+User.connection.create_table(:users, force: true) do |t|
+  t.string :first_name
+  t.string :last_name
+  t.integer :letters
+  t.timestamps null: false
+end
+
 class Todo < ActiveRecord::Base
   belongs_to :user
+end
+
+Todo.connection.create_table(:todos, force: true) do |t|
+  t.integer :user_id
+  t.text :body
+  t.boolean :published, null: false, default: false
+  t.timestamps null: false
 end
 
 User.find(1).todos.create(
