@@ -43,4 +43,4 @@ jobs:
         env:
           DB: "mysql"
           CONN_STR: "DRIVER=MySQL;SERVER=127.0.0.1;DATABASE=${{ env.DB_DATABASE }};USER=${{ env.DB_USER }};PASSWORD=${{ env.DB_PASSWORD }};"
-        run: bundle exec rake test
+        run: ./bin/ci-setup && bundle exec rake test
