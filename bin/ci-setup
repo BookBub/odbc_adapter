@@ -3,6 +3,7 @@
 case "$DB" in
 mysql)
   sudo odbcinst -i -d -f /etc/odbcinst.ini
+  cat /etc/odbcinst.ini
   ;;
 postgresql)
   sudo odbcinst -i -d -f /usr/share/psqlodbc/odbcinst.ini.template
