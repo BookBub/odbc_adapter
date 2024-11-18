@@ -34,16 +34,16 @@ class User < ActiveRecord::Base
 
   scope :lots_of_letters, -> { where(arel_table[:letters].gt(10)) }
 
-  create(
-    [
-      { first_name: 'Kevin', last_name: 'Deisz', letters: 10 },
-      { first_name: 'Michal', last_name: 'Klos', letters: 10 },
-      { first_name: 'Jason', last_name: 'Dsouza', letters: 11 },
-      { first_name: 'Ash', last_name: 'Hepburn', letters: 10 },
-      { first_name: 'Sharif', last_name: 'Younes', letters: 12 },
-      { first_name: 'Ryan', last_name: 'Brown', letters: 9 }
-    ]
-  )
+  # create(
+  #   [
+  #     { first_name: 'Kevin', last_name: 'Deisz', letters: 10 },
+  #     { first_name: 'Michal', last_name: 'Klos', letters: 10 },
+  #     { first_name: 'Jason', last_name: 'Dsouza', letters: 11 },
+  #     { first_name: 'Ash', last_name: 'Hepburn', letters: 10 },
+  #     { first_name: 'Sharif', last_name: 'Younes', letters: 12 },
+  #     { first_name: 'Ryan', last_name: 'Brown', letters: 9 }
+  #   ]
+  # )
 end
 
 User.connection.create_table(:users, force: true) do |t|
@@ -52,6 +52,17 @@ User.connection.create_table(:users, force: true) do |t|
   t.integer :letters
   t.timestamps null: false
 end
+
+User.create(
+  [
+    { first_name: 'Kevin', last_name: 'Deisz', letters: 10 },
+    { first_name: 'Michal', last_name: 'Klos', letters: 10 },
+    { first_name: 'Jason', last_name: 'Dsouza', letters: 11 },
+    { first_name: 'Ash', last_name: 'Hepburn', letters: 10 },
+    { first_name: 'Sharif', last_name: 'Younes', letters: 12 },
+    { first_name: 'Ryan', last_name: 'Brown', letters: 9 }
+  ]
+)
 
 class Todo < ActiveRecord::Base
   belongs_to :user
