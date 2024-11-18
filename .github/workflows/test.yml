@@ -1,0 +1,38 @@
+name: Ruby
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+
+jobs:
+  mysql:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: [3.2]
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
+          MYSQL_DATABASE: test
+        ports: ['3306:3306']
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+          ruby-version: ${{ matrix.ruby }}
+      - name: Install ODBC drivers
+        run: sudo apt-get install unixodbc unixodbc-dev libmyodbc mysql-client
+      - name: Install dependencies
+        run: bundle install
+      - name: Run tests
+        env:
+          DB: "mysql"
+          CONN_STR: "DRIVER=MySQL;SERVER=localhost;DATABASE=odbc_test;USER=root;PASSWORD=;"
+        run: ./bin/ci-setup && bundle exec rake
