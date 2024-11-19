@@ -24,6 +24,8 @@ module ODBCAdapter
       log(sql, name) do
         stmt =
           if prepared_statements
+            puts "SQL: #{sql}"
+            puts "binds: #{prepared_binds(binds)}"
             @connection.run(sql, *prepared_binds(binds))
           else
             @connection.run(sql)
