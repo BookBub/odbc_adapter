@@ -45,19 +45,19 @@ module ODBCAdapter
         [sql, binds]
       end
 
-      def type_cast(value, column = nil)
-        # puts caller
-        puts "value = #{value}, column = #{column}"
-        return super(value) unless column
+      # def type_cast(value, column = nil)
+      #   # puts caller
+      #   puts "value = #{value}, column = #{column}"
+      #   return super(value) unless column
 
-        case value
-        when String
-          return super unless 'bytea' == column.native_type
-          { value: value, format: 1 }
-        else
-          super
-        end
-      end
+      #   case value
+      #   when String
+      #     return super unless 'bytea' == column.native_type
+      #     { value: value, format: 1 }
+      #   else
+      #     super
+      #   end
+      # end
 
       # Quotes a string, escaping any ' (single quote) and \ (backslash)
       # characters.
