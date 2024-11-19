@@ -26,6 +26,8 @@ jobs:
       DB_DATABASE: odbc_test
       DB_USER: postgres
       DB_PASSWORD: password
+      BUNDLE_GEMFILE: ${{ github.workspace }}/gemfiles/${{ matrix.gemfile }}.gemfile
+      BUNDLE_PATH_RELATIVE_TO_CWD: true
     steps:
       - uses: actions/checkout@v3
       - name: Set up Ruby
