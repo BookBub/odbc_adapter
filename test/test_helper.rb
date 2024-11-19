@@ -46,34 +46,9 @@ class User < ActiveRecord::Base
   )
 end
 
-# User.connection.create_table(:users, force: true) do |t|
-#   t.string :first_name
-#   t.string :last_name
-#   t.integer :letters
-#   t.timestamps null: false
-# end
-
-# User.create(
-#   [
-#     { first_name: 'Kevin', last_name: 'Deisz', letters: 10 },
-#     { first_name: 'Michal', last_name: 'Klos', letters: 10 },
-#     { first_name: 'Jason', last_name: 'Dsouza', letters: 11 },
-#     { first_name: 'Ash', last_name: 'Hepburn', letters: 10 },
-#     { first_name: 'Sharif', last_name: 'Younes', letters: 12 },
-#     { first_name: 'Ryan', last_name: 'Brown', letters: 9 }
-#   ]
-# )
-
 class Todo < ActiveRecord::Base
   belongs_to :user
 end
-
-# Todo.connection.create_table(:todos, force: true) do |t|
-#   t.integer :user_id
-#   t.text :body
-#   t.boolean :published, null: false, default: false
-#   t.timestamps null: false
-# end
 
 User.find(1).todos.create(
   [
