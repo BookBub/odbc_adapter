@@ -2,8 +2,9 @@
 
 case "$DB" in
 mysql)
-  sudo odbcinst -i -d -f /etc/odbcinst.ini
-  cat /etc/odbcinst.ini
+  sudo odbcinst -i -d -f /usr/share/libmyodbc/odbcinst.ini
+  mysql -e "DROP DATABASE IF EXISTS odbc_test; CREATE DATABASE IF NOT EXISTS odbc_test;" -uroot
+  mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost';" -uroot
   ;;
 postgresql)
   sudo odbcinst -i -d -f /usr/share/psqlodbc/odbcinst.ini.template
