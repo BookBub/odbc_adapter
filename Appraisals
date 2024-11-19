@@ -1,3 +1,3 @@
-appraise "ar_6_0" do
-  gem 'activerecord', '~> 6.0.0'
+appraise "ar_6_1" do
+  gem 'activerecord', '~> 6.1.0'
 end
