@@ -46,7 +46,7 @@ module ODBCAdapter
       end
 
       def type_cast(value, column = nil)
-        puts caller
+        # puts caller
         puts "value = #{value}, column = #{column}"
         return super(value) unless column
 
