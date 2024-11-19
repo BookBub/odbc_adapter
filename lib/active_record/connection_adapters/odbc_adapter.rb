@@ -166,20 +166,6 @@ module ActiveRecord
         alias_type map, ODBC::SQL_TYPE_TIMESTAMP, ODBC::SQL_TIMESTAMP
       end
 
-      # Translate an exception from the native DBMS to something usable by
-      # ActiveRecord.
-      # def translate_exception(exception, message:, sql:, binds:)
-      #   error_number = exception.message[/^\d+/].to_i
-
-      #   if error_number == ERR_DUPLICATE_KEY_VALUE
-      #     ActiveRecord::RecordNotUnique.new(message, exception)
-      #   elsif error_number == ERR_QUERY_TIMED_OUT || exception.message =~ ERR_QUERY_TIMED_OUT_MESSAGE
-      #     ::ODBCAdapter::QueryTimeoutError.new(message, exception)
-      #   else
-      #     super
-      #   end
-      # end
-
       private
 
       # Can't use the built-in ActiveRecord map#alias_type because it doesn't
