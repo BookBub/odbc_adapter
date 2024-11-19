@@ -60,9 +60,13 @@ module ODBCAdapter
       column_query = "SHOW COLUMNS IN TABLE #{table_name}"
 
       # Temporarily disable debug logging so we don't spam the log with table column queries
-      query_results = ActiveRecord::Base.logger.silence do
-       exec_query(column_query)
-      end
+      query_results = if ActiveRecord::Base.logger
+                        ActiveRecord::Base.logger.silence do
+                          exec_query(column_query)
+                        end
+                      else
+                        exec_query(column_query)
+                      end
 
       column_data = query_results.map do |query_result|
         data_type_parsed = JSON.parse(query_result["data_type"])
