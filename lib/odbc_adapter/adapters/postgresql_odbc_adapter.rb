@@ -45,8 +45,8 @@ module ODBCAdapter
         [sql, binds]
       end
 
-      def type_cast(value, column)
-        return super unless column
+      def type_cast(value, column = nil)
+        return super(value) unless column
 
         case value
         when String
