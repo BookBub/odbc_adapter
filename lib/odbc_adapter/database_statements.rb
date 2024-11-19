@@ -129,7 +129,7 @@ module ODBCAdapter
     end
 
     def prepared_binds(binds)
-      binds.map(&:value_for_database).map { |bind| _type_cast(bind) }
+      binds.map(&:value_for_database).map { |bind| type_cast(bind) }
     end
   end
 end
