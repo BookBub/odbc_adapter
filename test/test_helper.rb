@@ -50,7 +50,7 @@ User.connection.create_table(:users, force: true) do |t|
   t.string :first_name
   t.string :last_name
   t.integer :letters
-  t.timestamps null: false
+  # t.timestamps null: false
 end
 
 puts "Users table has #{User.all.size} users"
