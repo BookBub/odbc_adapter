@@ -53,11 +53,11 @@ User.connection.create_table(:users, force: true) do |t|
   t.timestamps null: false
 end
 
-puts "Users table has #{User.size} users"
+puts "Users table has #{User.all.size} users"
 
 User.create(first_name: 'Kevin', last_name: 'Murphy', letters: 10)
 
-puts "Users table has #{User.size} users"
+puts "Users table has #{User.all.size} users"
 
 User.create(
   [
