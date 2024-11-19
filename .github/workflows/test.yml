@@ -12,6 +12,8 @@ jobs:
       fail-fast: false
       matrix:
         ruby: [2.6]
+        gemfile:
+          - ar_5_2
     services:
       postgres:
         image: postgres:16
