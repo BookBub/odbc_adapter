@@ -9,11 +9,8 @@ module ODBCAdapter
     # Returns the number of rows affected.
     def execute(sql, name = nil, binds = [])
       log(sql, name) do
-        if prepared_statements
-          @connection.do(sql, *prepared_binds(binds))
-        else
-          @connection.do(sql)
-        end
+        sql = bind_params(binds, sql) if prepared_statements
+        @connection.do(sql)
       end
     end
 
