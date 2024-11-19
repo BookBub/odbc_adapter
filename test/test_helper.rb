@@ -54,7 +54,7 @@ User.connection.create_table(:users, force: true) do |t|
 end
 
 puts "Users table has #{User.all.size} users"
-User.connection.execute('insert into "users" ("first_name") values ("Bob");')
+User.connection.execute("insert into users (first_name) values ('Bob');")
 puts "Users table has #{User.all.size} users"
 
 User.create(first_name: 'Kevin', last_name: 'Murphy', letters: 10)
