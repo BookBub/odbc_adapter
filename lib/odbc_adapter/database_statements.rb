@@ -21,14 +21,6 @@ module ODBCAdapter
       log(sql, name) do
         sql = bind_params(binds, sql) if prepared_statements
         stmt =  @connection.run(sql)
-        # stmt =
-        #   if prepared_statements
-        #     puts "SQL: #{sql}"
-        #     puts "binds: #{prepared_binds(binds)}"
-        #     @connection.run(sql, *prepared_binds(binds))
-        #   else
-        #     @connection.run(sql)
-        #   end
 
         columns = stmt.columns
         values  = stmt.to_a
@@ -137,7 +129,6 @@ module ODBCAdapter
     end
 
     def prepared_binds(binds)
-      # prepare_binds_for_database(binds).map { |bind| _type_cast(bind) }
       binds.map(&:value_for_database).map { |bind| _type_cast(bind) }
     end
   end
