@@ -46,7 +46,6 @@ module ODBCAdapter
       end
 
       def type_cast(value, column)
-        puts "calling PG adapter type_cast"
         return super unless column
 
         case value
