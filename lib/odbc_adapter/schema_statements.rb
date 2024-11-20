@@ -83,6 +83,10 @@ module ODBCAdapter
         end
         sql_type_metadata = ActiveRecord::ConnectionAdapters::SqlTypeMetadata.new(**args)
 
+        if col_name == "letters"
+          puts "Letters type: #{col_native_type}"
+        end
+
         cols << new_column(format_case(col_name), col_default, sql_type_metadata, col_nullable, col_native_type)
       end
     end
