@@ -49,6 +49,10 @@ class User < ActiveRecord::Base
 end
 
 puts "User letters type: #{User.column_for_attribute('letters').type}"
+puts "tinyint: #{ODBC::SQL_TINYINT}"
+puts "smallint: #{ODBC::SQL_SMALLINT}"
+puts "integer: #{ODBC::SQL_INTEGER}"
+puts "big: #{ODBC::SQL_BIGINT}"
 # User letters type: 4
 
 class Todo < ActiveRecord::Base
