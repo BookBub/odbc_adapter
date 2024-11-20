@@ -156,16 +156,16 @@ module ActiveRecord
         map.register_type ODBC::SQL_TIMESTAMP,    Type::DateTime.new
         map.register_type ODBC::SQL_GUID,         Type::String.new
 
-        map.alias_type ODBC::SQL_BIT,            'boolean'
-        map.alias_type ODBC::SQL_VARCHAR,        ODBC::SQL_CHAR
-        map.alias_type ODBC::SQL_WCHAR,          ODBC::SQL_CHAR
-        map.alias_type ODBC::SQL_WVARCHAR,       ODBC::SQL_CHAR
-        map.alias_type ODBC::SQL_WLONGVARCHAR,   ODBC::SQL_LONGVARCHAR
-        map.alias_type ODBC::SQL_VARBINARY,      ODBC::SQL_BINARY
-        map.alias_type ODBC::SQL_LONGVARBINARY,  ODBC::SQL_BINARY
-        map.alias_type ODBC::SQL_TYPE_DATE,      ODBC::SQL_DATE
-        map.alias_type ODBC::SQL_TYPE_TIME,      ODBC::SQL_TIME
-        map.alias_type ODBC::SQL_TYPE_TIMESTAMP, ODBC::SQL_TIMESTAMP
+        # map.alias_type ODBC::SQL_BIT,            'boolean'
+        # map.alias_type ODBC::SQL_VARCHAR,        ODBC::SQL_CHAR
+        # map.alias_type ODBC::SQL_WCHAR,          ODBC::SQL_CHAR
+        # map.alias_type ODBC::SQL_WVARCHAR,       ODBC::SQL_CHAR
+        # map.alias_type ODBC::SQL_WLONGVARCHAR,   ODBC::SQL_LONGVARCHAR
+        # map.alias_type ODBC::SQL_VARBINARY,      ODBC::SQL_BINARY
+        # map.alias_type ODBC::SQL_LONGVARBINARY,  ODBC::SQL_BINARY
+        # map.alias_type ODBC::SQL_TYPE_DATE,      ODBC::SQL_DATE
+        # map.alias_type ODBC::SQL_TYPE_TIME,      ODBC::SQL_TIME
+        # map.alias_type ODBC::SQL_TYPE_TIMESTAMP, ODBC::SQL_TIMESTAMP
       end
 
       # Can't use the built-in ActiveRecord map#alias_type because it doesn't
