@@ -34,6 +34,8 @@ class User < ActiveRecord::Base
 
   scope :lots_of_letters, -> { where(arel_table[:letters].gt(10)) }
 
+  attribute :letters, :integer
+
   create(
     [
       { first_name: 'Kevin', last_name: 'Deisz', letters: 10 },
