@@ -60,10 +60,6 @@ module ODBCAdapter
         result[:limit] = selected_row[2] # SQLGetTypeInfo: COL_SIZE
       end
 
-      puts "native_type_mapping"
-      puts "abstract: #{abstract}"
-      puts "rows: #{rows}"
-      puts "result: #{result}"
       result
     end
 
