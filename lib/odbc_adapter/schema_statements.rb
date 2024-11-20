@@ -85,46 +85,46 @@ module ODBCAdapter
 
     # Returns an array of Column objects for the table specified by
     # +table_name+.
-    def columns(table_name, _name = nil)
-      result = retrieve_column_data(table_name)
+    # def columns(table_name, _name = nil)
+    #   result = retrieve_column_data(table_name)
 
-      result.each_with_object([]) do |col, cols|
-        col_name        = col[:column_name]
-        col_default     = col[:col_default]
-        col_native_type = col[:col_native_type]
-        col_limit       = col[:column_size]
-        col_scale       = col[:numeric_scale]
-        col_nullable    = col[:is_nullable]
+    #   result.each_with_object([]) do |col, cols|
+    #     col_name        = col[:column_name]
+    #     col_default     = col[:col_default]
+    #     col_native_type = col[:col_native_type]
+    #     col_limit       = col[:column_size]
+    #     col_scale       = col[:numeric_scale]
+    #     col_nullable    = col[:is_nullable]
 
-        args = { sql_type: construct_sql_type(col_native_type, col_limit, col_scale), type: col_native_type, limit: col_limit }
-        args[:type] = case col_native_type
-                      when "BOOLEAN" then :boolean
-                      when "VARIANT" then :variant
-                      when "ARRAY" then :array
-                      when "STRUCT" then :object
-                      when "DATE" then :date
-                      when "VARCHAR" then :string
-                      when "TIMESTAMP" then :datetime
-                      when "TIME" then :time
-                      when "BINARY" then :binary
-                      when "DOUBLE" then :float
-                      when "DECIMAL"
-                        if col_scale == 0
-                          :integer
-                        else
-                          args[:scale]     = col_scale
-                          args[:precision] = col_limit
-                          :decimal
-                        end
-                      else
-                        nil
-                      end
+    #     args = { sql_type: construct_sql_type(col_native_type, col_limit, col_scale), type: col_native_type, limit: col_limit }
+    #     args[:type] = case col_native_type
+    #                   when "BOOLEAN" then :boolean
+    #                   when "VARIANT" then :variant
+    #                   when "ARRAY" then :array
+    #                   when "STRUCT" then :object
+    #                   when "DATE" then :date
+    #                   when "VARCHAR" then :string
+    #                   when "TIMESTAMP" then :datetime
+    #                   when "TIME" then :time
+    #                   when "BINARY" then :binary
+    #                   when "DOUBLE" then :float
+    #                   when "DECIMAL"
+    #                     if col_scale == 0
+    #                       :integer
+    #                     else
+    #                       args[:scale]     = col_scale
+    #                       args[:precision] = col_limit
+    #                       :decimal
+    #                     end
+    #                   else
+    #                     nil
+    #                   end
 
-        sql_type_metadata = ActiveRecord::ConnectionAdapters::SqlTypeMetadata.new(**args)
+    #     sql_type_metadata = ActiveRecord::ConnectionAdapters::SqlTypeMetadata.new(**args)
 
-        cols << new_column(format_case(col_name), col_default, sql_type_metadata, col_nullable, col_native_type)
-      end
-    end
+    #     cols << new_column(format_case(col_name), col_default, sql_type_metadata, col_nullable, col_native_type)
+    #   end
+    # end
 
     # Returns just a table's primary key
     def primary_key(table_name)
