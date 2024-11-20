@@ -13,7 +13,7 @@ jobs:
       matrix:
         ruby: [2.6]
         gemfile:
-          - ar_5_2
+          - ar_6_0
     services:
       postgres:
         image: postgres:16
