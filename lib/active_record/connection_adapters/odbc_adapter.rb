@@ -131,7 +131,7 @@ module ActiveRecord
         ::ODBCAdapter::Column.new(name, default, sql_type_metadata, null, native_type)
       end
 
-      protected
+      private
 
       # Build the type map for ActiveRecord
       def initialize_type_map(map)
@@ -167,8 +167,6 @@ module ActiveRecord
         alias_type map, ODBC::SQL_TYPE_TIME,      ODBC::SQL_TIME
         alias_type map, ODBC::SQL_TYPE_TIMESTAMP, ODBC::SQL_TIMESTAMP
       end
-
-      private
 
       # Can't use the built-in ActiveRecord map#alias_type because it doesn't
       # work with non-string keys, and in our case the keys are (almost) all
