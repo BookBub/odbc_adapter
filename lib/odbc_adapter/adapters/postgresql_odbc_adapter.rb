@@ -34,14 +34,14 @@ module ODBCAdapter
       end
 
       def type_cast(value, column = nil)
-        return super unless column
+        return super(value) unless column
 
         case value
         when String
-          return super unless 'bytea' == column.native_type
+          return super(value) unless 'bytea' == column.native_type
           { value: value, format: 1 }
         else
-          super
+          super(value)
         end
       end
 
