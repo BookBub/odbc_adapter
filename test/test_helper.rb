@@ -34,8 +34,6 @@ class User < ActiveRecord::Base
 
   scope :lots_of_letters, -> { where(arel_table[:letters].gt(10)) }
 
-  # attribute :letters, :integer
-
   create(
     [
       { first_name: 'Kevin', last_name: 'Deisz', letters: 10 },
@@ -47,8 +45,6 @@ class User < ActiveRecord::Base
     ]
   )
 end
-
-puts "User letters type: #{User.column_for_attribute('letters').type}"
 
 class Todo < ActiveRecord::Base
   belongs_to :user
