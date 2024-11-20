@@ -165,5 +165,68 @@ module ODBCAdapter
     def current_database
       database_metadata.database_name.strip
     end
+
+    private
+
+    def extract_default_from_snowflake(default)
+      case default
+        # null
+      when nil
+        nil
+        # Quoted strings
+      when /\A[(B]?'(.*)'\z/m
+        $1.gsub("''", "'").gsub("\\\\","\\")
+        # Boolean types
+      when "TRUE"
+        "true"
+      when "FALSE"
+        "false"
+        # Numeric types
+      when /\A(-?\d+(\.\d*)?)\z/
+        $1
+      else
+        nil
+      end
+    end
+
+    def extract_data_type_from_snowflake(snowflake_data_type)
+      case snowflake_data_type
+      when "NUMBER"
+        "DECIMAL"
+      when /\ATIMESTAMP_.*/
+        "TIMESTAMP"
+      when "TEXT"
+        "VARCHAR"
+      when "FLOAT"
+        "DOUBLE"
+      when "FIXED"
+        "DECIMAL"
+      when "REAL"
+        "DOUBLE"
+      else
+        snowflake_data_type
+      end
+    end
+
+    def extract_column_size_from_snowflake(type_information)
+      case type_information["type"]
+      when /\ATIMESTAMP_.*/
+        35
+      when "DATE"
+        10
+      when "FLOAT"
+        38
+      when "REAL"
+        38
+      when "BOOLEAN"
+        1
+      else
+        type_information["length"] || type_information["precision"] || 0
+      end
+    end
+
+    def extract_scale_from_snowflake(type_information)
+      type_information["scale"] || 0
+    end
   end
 end
