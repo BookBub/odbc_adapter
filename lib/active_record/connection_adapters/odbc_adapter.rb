@@ -190,6 +190,8 @@ module ActiveRecord
       def initialize_type_map(map = type_map)
         super
 
+        put "calling initialize_type_map"
+
         map.register_type 'boolean',              Type::Boolean.new
         map.register_type ODBC::SQL_CHAR,         Type::String.new
         map.register_type ODBC::SQL_LONGVARCHAR,  Type::Text.new
