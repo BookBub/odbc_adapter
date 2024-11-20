@@ -134,7 +134,7 @@ module ActiveRecord
       private
 
       # Build the type map for ActiveRecord
-      def initialize_type_map(map)
+      def initialize_type_map(map = type_map)
         puts "calling initialize type map"
 
         map.register_type 'boolean',              Type::Boolean.new
@@ -156,16 +156,16 @@ module ActiveRecord
         map.register_type ODBC::SQL_TIMESTAMP,    Type::DateTime.new
         map.register_type ODBC::SQL_GUID,         Type::String.new
 
-        alias_type map, ODBC::SQL_BIT,            'boolean'
-        alias_type map, ODBC::SQL_VARCHAR,        ODBC::SQL_CHAR
-        alias_type map, ODBC::SQL_WCHAR,          ODBC::SQL_CHAR
-        alias_type map, ODBC::SQL_WVARCHAR,       ODBC::SQL_CHAR
-        alias_type map, ODBC::SQL_WLONGVARCHAR,   ODBC::SQL_LONGVARCHAR
-        alias_type map, ODBC::SQL_VARBINARY,      ODBC::SQL_BINARY
-        alias_type map, ODBC::SQL_LONGVARBINARY,  ODBC::SQL_BINARY
-        alias_type map, ODBC::SQL_TYPE_DATE,      ODBC::SQL_DATE
-        alias_type map, ODBC::SQL_TYPE_TIME,      ODBC::SQL_TIME
-        alias_type map, ODBC::SQL_TYPE_TIMESTAMP, ODBC::SQL_TIMESTAMP
+        map.alias_type ODBC::SQL_BIT,            'boolean'
+        map.alias_type ODBC::SQL_VARCHAR,        ODBC::SQL_CHAR
+        map.alias_type ODBC::SQL_WCHAR,          ODBC::SQL_CHAR
+        map.alias_type ODBC::SQL_WVARCHAR,       ODBC::SQL_CHAR
+        map.alias_type ODBC::SQL_WLONGVARCHAR,   ODBC::SQL_LONGVARCHAR
+        map.alias_type ODBC::SQL_VARBINARY,      ODBC::SQL_BINARY
+        map.alias_type ODBC::SQL_LONGVARBINARY,  ODBC::SQL_BINARY
+        map.alias_type ODBC::SQL_TYPE_DATE,      ODBC::SQL_DATE
+        map.alias_type ODBC::SQL_TYPE_TIME,      ODBC::SQL_TIME
+        map.alias_type ODBC::SQL_TYPE_TIMESTAMP, ODBC::SQL_TIMESTAMP
       end
 
       # Can't use the built-in ActiveRecord map#alias_type because it doesn't
