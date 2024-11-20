@@ -153,16 +153,16 @@ module ActiveRecord
           map.register_type ODBC::SQL_TIMESTAMP,    Type::DateTime.new
           map.register_type ODBC::SQL_GUID,         Type::String.new
 
-          alias_type map, ODBC::SQL_BIT,            'boolean'
-          alias_type map, ODBC::SQL_VARCHAR,        ODBC::SQL_CHAR
-          alias_type map, ODBC::SQL_WCHAR,          ODBC::SQL_CHAR
-          alias_type map, ODBC::SQL_WVARCHAR,       ODBC::SQL_CHAR
-          alias_type map, ODBC::SQL_WLONGVARCHAR,   ODBC::SQL_LONGVARCHAR
-          alias_type map, ODBC::SQL_VARBINARY,      ODBC::SQL_BINARY
-          alias_type map, ODBC::SQL_LONGVARBINARY,  ODBC::SQL_BINARY
-          alias_type map, ODBC::SQL_TYPE_DATE,      ODBC::SQL_DATE
-          alias_type map, ODBC::SQL_TYPE_TIME,      ODBC::SQL_TIME
-          alias_type map, ODBC::SQL_TYPE_TIMESTAMP, ODBC::SQL_TIMESTAMP
+          # alias_type map, ODBC::SQL_BIT,            'boolean'
+          # alias_type map, ODBC::SQL_VARCHAR,        ODBC::SQL_CHAR
+          # alias_type map, ODBC::SQL_WCHAR,          ODBC::SQL_CHAR
+          # alias_type map, ODBC::SQL_WVARCHAR,       ODBC::SQL_CHAR
+          # alias_type map, ODBC::SQL_WLONGVARCHAR,   ODBC::SQL_LONGVARCHAR
+          # alias_type map, ODBC::SQL_VARBINARY,      ODBC::SQL_BINARY
+          # alias_type map, ODBC::SQL_LONGVARBINARY,  ODBC::SQL_BINARY
+          # alias_type map, ODBC::SQL_TYPE_DATE,      ODBC::SQL_DATE
+          # alias_type map, ODBC::SQL_TYPE_TIME,      ODBC::SQL_TIME
+          # alias_type map, ODBC::SQL_TYPE_TIMESTAMP, ODBC::SQL_TIMESTAMP
 
 
           #Snowflake ODBC Adapter specific
