@@ -45,4 +45,4 @@ jobs:
         env:
           DB: "postgres"
           CONN_STR: "DRIVER={PostgreSQL ANSI};SERVER=127.0.0.1;PORT=5432;DATABASE=${{ env.DB_DATABASE }};UID=${{ env.DB_USER }};password=${{ env.DB_PASSWORD }}"
-        run: bundle exec rake test TEST=test/calculations_test.rb TESTOPTS="--name=test_average -v"
+        run: bundle exec rake test
