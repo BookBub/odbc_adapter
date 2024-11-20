@@ -20,6 +20,7 @@ module ODBCAdapter
     def exec_query(sql, name = 'SQL', binds = [], prepare: false) # rubocop:disable Lint/UnusedMethodArgument
       log(sql, name) do
         sql = bind_params(binds, sql) if prepared_statements
+        puts "Attempting to run: #{sql}"
         stmt =  @connection.run(sql)
 
         columns = stmt.columns
