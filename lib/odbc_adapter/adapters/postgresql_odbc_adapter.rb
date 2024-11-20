@@ -33,7 +33,7 @@ module ODBCAdapter
         "#{table_name}_#{pk || 'id'}_seq"
       end
 
-      def type_cast(value, column)
+      def type_cast(value, column = nil)
         return super unless column
 
         case value
