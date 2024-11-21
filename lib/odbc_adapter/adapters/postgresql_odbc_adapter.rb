@@ -35,16 +35,6 @@ module ODBCAdapter
         "#{table_name}_#{pk || 'id'}_seq"
       end
 
-      def sql_for_insert(sql, pk, binds)
-        unless pk
-          table_ref = extract_table_ref_from_insert_sql(sql)
-          pk = primary_key(table_ref) if table_ref
-        end
-
-        sql = "#{sql} RETURNING #{quote_column_name(pk)}" if pk
-        [sql, binds]
-      end
-
       # Quotes a string, escaping any ' (single quote) and \ (backslash)
       # characters.
       def quote_string(string)
