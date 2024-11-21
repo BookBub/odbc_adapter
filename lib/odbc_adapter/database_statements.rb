@@ -122,8 +122,8 @@ module ODBCAdapter
                         # so that future us can see what they should be
                         value
                       else
-                        # the use of @@connection.types() results in a "was not dropped before garbage collection" warning.
-                        raise "Unknown column type: #{column.type}  #{@connection.types(column.type).first[0]}"
+                        # the use of @@raw_connection.types() results in a "was not dropped before garbage collection" warning.
+                        raise "Unknown column type: #{column.type}  #{@raw_connection.types(column.type).first[0]}"
                       end
 
           row[col_index] = new_value
