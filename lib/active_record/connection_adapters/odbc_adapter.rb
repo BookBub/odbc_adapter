@@ -87,6 +87,9 @@ module ActiveRecord
         puts deprecated_connection_options
         puts "dep config"
         puts deprecated_config
+        # initialize is getting called twice. Second time the dep config is the
+        # database metadata
+        # Got to be coming from the new call at the end of this initializer
         super
 
         conn_params = @config.compact
@@ -103,8 +106,11 @@ module ActiveRecord
             raise ArgumentError, 'No data source name (:dsn) or connection string (:conn_str) specified.'
           end
 
+
         @database_metadata = ::ODBCAdapter::DatabaseMetadata.new(@raw_connection)
-        @database_metadata.adapter_class.new(@raw_connection, logger, config, @database_metadata)
+        puts "what is the adapter class?"
+        puts @database_metadata.adapter_class.name
+        # @database_metadata.adapter_class.new(@raw_connection, logger, config, @database_metadata)
       end
 
       # Returns the human-readable name of the adapter.
