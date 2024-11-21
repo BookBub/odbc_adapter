@@ -128,13 +128,15 @@ module ActiveRecord
       # as super except that it also passes in the native type.
       # rubocop:disable Metrics/ParameterLists
       def new_column(name, default, sql_type_metadata, null, native_type = nil)
-        puts "calling new column"
-        puts name
-        puts default
-        puts sql_type_metadata
-        puts null
-        puts native_type
-        puts "============"
+        if name == "letters"
+          puts "calling new column on letters"
+          puts "name: #{name}"
+          puts "default: #{default}"
+          puts "metadata: #{sql_type_metadata.to_s}"
+          puts "null: #{null}"
+          puts "native type: #{native_type}"
+          puts "============"
+        end
         ::ODBCAdapter::Column.new(name, default, sql_type_metadata, null, native_type)
       end
 
