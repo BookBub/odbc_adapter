@@ -77,11 +77,12 @@ module ActiveRecord
       # when a connection is first established.
       attr_reader :database_metadata
 
-      def initialize(connection, logger, config, database_metadata)
-        configure_time_options(connection)
-        super(connection, logger, config)
-        @database_metadata = database_metadata
-        @raw_connection = connection
+      def initialize(...)
+        super
+        # configure_time_options(connection)
+        # super(connection, logger, config)
+        # @database_metadata = database_metadata
+        # @raw_connection = connection
       end
 
       # Returns the human-readable name of the adapter.
