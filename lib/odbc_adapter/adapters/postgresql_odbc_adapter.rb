@@ -46,10 +46,15 @@ module ODBCAdapter
       end
 
       def type_cast(value, column)
+        puts "type cast value: #{value}"
+        puts "type cast value class: #{value.class.name}"
+        puts "type cast column: #{column}"
         return super unless column
+        puts "didn't call super"
 
         case value
         when String
+          puts "type case native type: #{column.native_type}"
           return super unless 'bytea' == column.native_type
           { value: value, format: 1 }
         else
