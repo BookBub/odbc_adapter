@@ -19,7 +19,10 @@ module ActiveRecord
     class << self
       # Build a new ODBC connection with the given configuration.
       def odbc_connection(config)
-        ConnectionAdapters::ODBCAdapter.new(config)
+        puts "in odbc_connection. Config:"
+        puts config
+        # ConnectionAdapters::ODBCAdapter.adapter_for(dbms_name)
+        # ConnectionAdapters::ODBCAdapter.new(config)
         # config = config.symbolize_keys
 
         # connection, config =
