@@ -19,43 +19,44 @@ module ActiveRecord
     class << self
       # Build a new ODBC connection with the given configuration.
       def odbc_connection(config)
-        config = config.symbolize_keys
+        new(config)
+        # config = config.symbolize_keys
 
-        connection, config =
-          if config.key?(:dsn)
-            odbc_dsn_connection(config)
-          elsif config.key?(:conn_str)
-            odbc_conn_str_connection(config)
-          else
-            raise ArgumentError, 'No data source name (:dsn) or connection string (:conn_str) specified.'
-          end
+        # connection, config =
+        #   if config.key?(:dsn)
+        #     odbc_dsn_connection(config)
+        #   elsif config.key?(:conn_str)
+        #     odbc_conn_str_connection(config)
+        #   else
+        #     raise ArgumentError, 'No data source name (:dsn) or connection string (:conn_str) specified.'
+        #   end
 
-        database_metadata = ::ODBCAdapter::DatabaseMetadata.new(connection)
-        database_metadata.adapter_class.new(connection, logger, config, database_metadata)
+        # database_metadata = ::ODBCAdapter::DatabaseMetadata.new(connection)
+        # database_metadata.adapter_class.new(connection, logger, config, database_metadata)
       end
 
       private
 
       # Connect using a predefined DSN.
-      def odbc_dsn_connection(config)
-        username   = config[:username] ? config[:username].to_s : nil
-        password   = config[:password] ? config[:password].to_s : nil
-        connection = ODBC.connect(config[:dsn], username, password)
-        [connection, config.merge(username: username, password: password)]
-      end
+      # def odbc_dsn_connection(config)
+      #   username   = config[:username] ? config[:username].to_s : nil
+      #   password   = config[:password] ? config[:password].to_s : nil
+      #   connection = ODBC.connect(config[:dsn], username, password)
+      #   [connection, config.merge(username: username, password: password)]
+      # end
 
       # Connect using ODBC connection string
       # Supports DSN-based or DSN-less connections
       # e.g. "DSN=virt5;UID=rails;PWD=rails"
       #      "DRIVER={OpenLink Virtuoso};HOST=carlmbp;UID=rails;PWD=rails"
-      def odbc_conn_str_connection(config)
-        driver = ODBC::Driver.new
-        driver.name = 'odbc'
-        driver.attrs = config[:conn_str].split(';').map { |option| option.split('=', 2) }.to_h
+      # def odbc_conn_str_connection(config)
+      #   driver = ODBC::Driver.new
+      #   driver.name = 'odbc'
+      #   driver.attrs = config[:conn_str].split(';').map { |option| option.split('=', 2) }.to_h
 
-        connection = ODBC::Database.new.drvconnect(driver)
-        [connection, config.merge(driver: driver)]
-      end
+      #   connection = ODBC::Database.new.drvconnect(driver)
+      #   [connection, config.merge(driver: driver)]
+      # end
     end
   end
 
@@ -79,10 +80,23 @@ module ActiveRecord
 
       def initialize(...)
         super
+
+        conn_params = @config.compact
         # configure_time_options(connection)
         # super(connection, logger, config)
         # @database_metadata = database_metadata
         # @raw_connection = connection
+        @raw_connection, config =
+          if conn_params.key?(:dsn)
+            odbc_dsn_connection(conn_params)
+          elsif conn_params.key?(:conn_str)
+            odbc_conn_str_connection(conn_params)
+          else
+            raise ArgumentError, 'No data source name (:dsn) or connection string (:conn_str) specified.'
+          end
+
+        @database_metadata = ::ODBCAdapter::DatabaseMetadata.new(@raw_connection)
+        @database_metadata.adapter_class.new(@raw_connection, logger, config, @database_metadata)
       end
 
       # Returns the human-readable name of the adapter.
@@ -180,6 +194,27 @@ module ActiveRecord
       end
 
       private
+
+      # Connect using a predefined DSN.
+      def odbc_dsn_connection(config)
+        username   = config[:username] ? config[:username].to_s : nil
+        password   = config[:password] ? config[:password].to_s : nil
+        connection = ODBC.connect(config[:dsn], username, password)
+        [connection, config.merge(username: username, password: password)]
+      end
+
+      # Connect using ODBC connection string
+      # Supports DSN-based or DSN-less connections
+      # e.g. "DSN=virt5;UID=rails;PWD=rails"
+      #      "DRIVER={OpenLink Virtuoso};HOST=carlmbp;UID=rails;PWD=rails"
+      def odbc_conn_str_connection(config)
+        driver = ODBC::Driver.new
+        driver.name = 'odbc'
+        driver.attrs = config[:conn_str].split(';').map { |option| option.split('=', 2) }.to_h
+
+        connection = ODBC::Database.new.drvconnect(driver)
+        [connection, config.merge(driver: driver)]
+      end
 
       # Can't use the built-in ActiveRecord map#alias_type because it doesn't
       # work with non-string keys, and in our case the keys are (almost) all
