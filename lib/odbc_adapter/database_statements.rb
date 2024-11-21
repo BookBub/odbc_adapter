@@ -14,6 +14,16 @@ module ODBCAdapter
       end
     end
 
+    # Executes an INSERT query and returns the new record's ID
+    def insert(arel, name = nil, pk = nil, id_value = nil, sequence_name = nil, binds = [], returning: nil)
+      sql, binds = to_sql_and_binds(arel, binds)
+      exec_insert(sql, name, binds, pk, sequence_name, returning: returning)
+
+      return [id_value] unless returning.nil?
+
+      id_value
+    end
+
     # Executes +sql+ statement in the context of this connection using
     # +binds+ as the bind substitutes. +name+ is logged along with
     # the executed +sql+ statement.
