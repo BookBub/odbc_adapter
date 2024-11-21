@@ -6,11 +6,6 @@ This adapter will work for basic queries for most DBMSs out of the box, without 
 
 A lot of this work is based on [OpenLink's ActiveRecord adapter](http://odbc-rails.rubyforge.org/) which works for earlier versions of Rails.
 
-## ActiveRecord 7.0 Compatibility Issues
-
-Currently this is known to not type cast columns out of database queries
-correctly into their proper data types.
-
 ## Installation
 
 Ensure you have the ODBC driver installed on your machine. You will also need the driver for whichever database to which you want ODBC to connect.

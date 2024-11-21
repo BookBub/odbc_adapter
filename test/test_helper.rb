@@ -32,9 +32,6 @@ end
 class User < ActiveRecord::Base
   has_many :todos, dependent: :destroy
 
-  # Ideally this should be removed with the natural type inference working.
-  attribute :letters, :integer
-
   scope :lots_of_letters, -> { where(arel_table[:letters].gt(10)) }
 
   create(
