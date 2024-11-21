@@ -45,18 +45,6 @@ module ODBCAdapter
         [sql, binds]
       end
 
-      def type_cast(value, column)
-        return super unless column
-
-        case value
-        when String
-          return super unless 'bytea' == column.native_type
-          { value: value, format: 1 }
-        else
-          super
-        end
-      end
-
       # Quotes a string, escaping any ' (single quote) and \ (backslash)
       # characters.
       def quote_string(string)
