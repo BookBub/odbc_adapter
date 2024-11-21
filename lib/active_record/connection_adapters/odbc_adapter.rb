@@ -78,7 +78,15 @@ module ActiveRecord
       # when a connection is first established.
       attr_reader :database_metadata
 
-      def initialize(...)
+      def initialize(config_or_deprecated_connection, deprecated_logger = nil, deprecated_connection_options = nil, deprecated_config = nil)
+        puts "config or dep connection"
+        puts config_or_deprecated_connection
+        puts "dep logger"
+        puts deprecated_logger
+        puts "dep conn options"
+        puts deprecated_connection_options
+        puts "dep config"
+        puts deprecated_config
         super
 
         conn_params = @config.compact
