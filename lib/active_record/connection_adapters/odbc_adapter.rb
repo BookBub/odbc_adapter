@@ -97,7 +97,7 @@ module ActiveRecord
         # super(connection, logger, config)
         # @database_metadata = database_metadata
         # @raw_connection = connection
-        @raw_connection, config =
+        @raw_connection, _config =
           if conn_params.key?(:dsn)
             odbc_dsn_connection(conn_params)
           elsif conn_params.key?(:conn_str)
