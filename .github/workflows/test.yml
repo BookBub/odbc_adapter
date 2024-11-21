@@ -14,6 +14,7 @@ jobs:
         ruby: [3.2]
         gemfile:
           - ar_7_0
+          - ar_7_1
     services:
       postgres:
         image: postgres:16
