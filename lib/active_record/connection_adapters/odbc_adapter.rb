@@ -95,6 +95,11 @@ module ActiveRecord
         true
       end
 
+      # ODBC adapter does not support the returning clause
+      def supports_insert_returning?
+        false
+      end
+
       # CONNECTION MANAGEMENT ====================================
 
       # Checks whether the connection to the database is still active. This
@@ -130,6 +135,12 @@ module ActiveRecord
       # rubocop:disable Metrics/ParameterLists
       def new_column(name, default, sql_type_metadata, null, native_type = nil)
         ::ODBCAdapter::Column.new(name, default, sql_type_metadata, null, native_type)
+      end
+
+      # odbc_adapter does not support returning, so there are no return values from an insert
+      def return_value_after_insert?(column) # :nodoc:
+        # column.auto_incremented
+        false
       end
 
       protected
