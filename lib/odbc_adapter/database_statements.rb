@@ -10,7 +10,7 @@ module ODBCAdapter
     def execute(sql, name = nil, binds = [])
       log(sql, name) do
         sql = bind_params(binds, sql) if prepared_statements
-        @connection.do(sql)
+        @raw_connection.do(sql)
       end
     end
 
@@ -20,7 +20,7 @@ module ODBCAdapter
     def exec_query(sql, name = 'SQL', binds = [], prepare: false) # rubocop:disable Lint/UnusedMethodArgument
       log(sql, name) do
         sql = bind_params(binds, sql) if prepared_statements
-        stmt =  @connection.run(sql)
+        stmt =  @raw_connection.run(sql)
 
         columns = stmt.columns
         values  = stmt.to_a
@@ -42,20 +42,20 @@ module ODBCAdapter
 
     # Begins the transaction (and turns off auto-committing).
     def begin_db_transaction
-      @connection.autocommit = false
+      @raw_connection.autocommit = false
     end
 
     # Commits the transaction (and turns on auto-committing).
     def commit_db_transaction
-      @connection.commit
-      @connection.autocommit = true
+      @raw_connection.commit
+      @raw_connection.autocommit = true
     end
 
     # Rolls back the transaction (and turns on auto-committing). Must be
     # done if the transaction block raises an exception or returns false.
     def exec_rollback_db_transaction
-      @connection.rollback
-      @connection.autocommit = true
+      @raw_connection.rollback
+      @raw_connection.autocommit = true
     end
 
     # Returns the default sequence name for a table.
