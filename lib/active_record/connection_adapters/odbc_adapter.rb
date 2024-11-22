@@ -19,6 +19,8 @@ module ActiveRecord
     class << self
       # Build a new ODBC connection with the given configuration.
       def odbc_connection(config)
+        config = config.symbolize_keys
+
         connection, config =
           if config.key?(:dsn)
             odbc_dsn_connection(config)
