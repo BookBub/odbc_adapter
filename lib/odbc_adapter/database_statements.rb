@@ -45,17 +45,17 @@ module ODBCAdapter
     def to_sql_and_binds(arel_or_sql_string, binds = [], preparable = nil) # :nodoc:
       puts "#####################################"
       puts "IN ODBC to_sql_and_binds!"
-      puts "initial binds: #{binds.class.name}"
-      puts binds
-      puts "initial arel_or_sql_string: #{arel_or_sql_string.class.name}"
-      puts arel_or_sql_string
+      # puts "initial binds: #{binds.class.name}"
+      # puts binds
+      # puts "initial arel_or_sql_string: #{arel_or_sql_string.class.name}"
+      # puts arel_or_sql_string
       # Arel::TreeManager -> Arel::Node
       if arel_or_sql_string.respond_to?(:ast)
         arel_or_sql_string = arel_or_sql_string.ast
       end
 
       if Arel.arel_node?(arel_or_sql_string) && !(String === arel_or_sql_string)
-        puts "arel node"
+        # puts "arel node"
         unless binds.empty?
           raise "Passing bind parameters with an arel AST is forbidden. " \
             "The values must be stored on the AST directly"
@@ -65,9 +65,9 @@ module ODBCAdapter
 
         if prepared_statements
           collector.preparable = true
-          puts "visitor class: #{visitor.class.name}"
-          puts "collector class: #{collector.class.name}"
-          puts "arel_or_sql_string class: #{arel_or_sql_string.class.name}"
+          # puts "visitor class: #{visitor.class.name}" # Arel::Visitors::PostgreSQL
+          # puts "collector class: #{collector.class.name}" # Arel::Collectors::Composite
+          # puts "arel_or_sql_string class: #{arel_or_sql_string.class.name}" # Arel::Nodes::SelectStatement
           sql, binds = visitor.compile(arel_or_sql_string, collector)
 
           if binds.length > bind_params_length
@@ -77,7 +77,7 @@ module ODBCAdapter
           end
           preparable = collector.preparable
         else
-          puts "not prepared statements"
+          # puts "not prepared statements"
           sql = visitor.compile(arel_or_sql_string, collector)
         end
         puts "sql after transform:"
@@ -87,13 +87,13 @@ module ODBCAdapter
         puts "#####################################"
         [sql.freeze, binds, preparable]
       else
-        puts "not arel node"
+        # puts "not arel node"
         arel_or_sql_string = arel_or_sql_string.dup.freeze unless arel_or_sql_string.frozen?
-        puts "sql after transform:"
-        puts sql
-        puts "binds after transform:"
-        puts binds
-        puts "#####################################"
+        # puts "sql after transform:"
+        # puts sql
+        # puts "binds after transform:"
+        # puts binds
+        # puts "#####################################"
         [arel_or_sql_string, binds, preparable]
       end
     end
@@ -190,15 +190,15 @@ module ODBCAdapter
     end
 
     def bind_params(binds, sql)
-      puts "********************************"
-      puts "BIND_PARAMS"
-      puts "sql to bind: #{sql}"
-      puts "binds: #{binds}"
+      # puts "********************************"
+      # puts "BIND_PARAMS"
+      # puts "sql to bind: #{sql}"
+      # puts "binds: #{binds}"
       prepared_binds = *prepared_binds(binds)
       prepared_binds.each.with_index(1) do |val, ind|
         sql = sql.gsub("$#{ind}", "'#{val}'")
       end
-      puts "********************************"
+      # puts "********************************"
       sql
     end
 
@@ -280,9 +280,8 @@ module Arel # :nodoc: all
         end
 
         def visit(object, collector = nil)
-          puts "IN AREL VISITOR#VISIT"
           dispatch_method = dispatch[object.class]
-          puts "dispatch_method: #{dispatch_method}"
+          puts "visit dispatch_method: #{dispatch_method}"
           if collector
             send dispatch_method, object, collector
           else
@@ -325,11 +324,8 @@ module Arel # :nodoc: all
       end
 
       def add_bind(bind, &block)
-        puts "add bind: #{bind}"
         left.add_bind bind, &block
         right.add_bind bind, &block
-        puts "left: #{left}"
-        puts "right: #{right}"
         self
       end
 
