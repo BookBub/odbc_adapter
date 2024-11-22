@@ -169,12 +169,15 @@ module ODBCAdapter
     end
 
     def bind_params(binds, sql)
+      puts "********************************"
+      puts "BIND_PARAMS"
       puts "sql to bind: #{sql}"
       puts "binds: #{binds}"
       prepared_binds = *prepared_binds(binds)
       prepared_binds.each.with_index(1) do |val, ind|
         sql = sql.gsub("$#{ind}", "'#{val}'")
       end
+      puts "********************************"
       sql
     end
 
