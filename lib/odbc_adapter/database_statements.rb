@@ -1005,6 +1005,9 @@ module Arel # :nodoc: all
             collector << " IS NULL"
           else
             collector << " = "
+            puts "in equality node"
+            puts "about to visit right: #{right.class.name}"
+            puts "right value: #{right.value}"
             visit right, collector
           end
         end
