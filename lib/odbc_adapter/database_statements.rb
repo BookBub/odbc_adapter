@@ -43,8 +43,9 @@ module ODBCAdapter
     end
 
     def to_sql_and_binds(arel_or_sql_string, binds = [], preparable = nil) # :nodoc:
+      puts "#####################################"
       puts "IN ODBC to_sql_and_binds!"
-      puts "initial binds"
+      puts "initial binds: #{binds.class.name}"
       puts binds
       # Arel::TreeManager -> Arel::Node
       if arel_or_sql_string.respond_to?(:ast)
@@ -78,12 +79,14 @@ module ODBCAdapter
         end
         puts "binds after transform:"
         puts binds
+        puts "#####################################"
         [sql.freeze, binds, preparable]
       else
         puts "not arel node"
         arel_or_sql_string = arel_or_sql_string.dup.freeze unless arel_or_sql_string.frozen?
         puts "binds after transform:"
         puts binds
+        puts "#####################################"
         [arel_or_sql_string, binds, preparable]
       end
     end
@@ -180,12 +183,15 @@ module ODBCAdapter
     end
 
     def bind_params(binds, sql)
+      puts "********************************"
+      puts "BIND_PARAMS"
       puts "sql to bind: #{sql}"
       puts "binds: #{binds}"
       prepared_binds = *prepared_binds(binds)
       prepared_binds.each.with_index(1) do |val, ind|
         sql = sql.gsub("$#{ind}", "'#{val}'")
       end
+      puts "********************************"
       sql
     end
 
