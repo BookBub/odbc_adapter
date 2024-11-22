@@ -49,6 +49,7 @@ module ODBCAdapter
       puts binds
       # Arel::TreeManager -> Arel::Node
       if arel_or_sql_string.respond_to?(:ast)
+        puts "responds to ast"
         arel_or_sql_string = arel_or_sql_string.ast
       end
 
@@ -66,6 +67,7 @@ module ODBCAdapter
           collector.preparable = true
           puts "visitor class: #{visitor.class.name}"
           puts "collector class: #{collector.class.name}"
+          puts "arel_or_sql_string class: #{arel_or_sql_string.class.name}"
           sql, binds = visitor.compile(arel_or_sql_string, collector)
 
           if binds.length > bind_params_length
