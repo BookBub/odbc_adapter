@@ -1098,7 +1098,11 @@ module Arel # :nodoc: all
         end
 
         def visit_Arel_Attributes_Attribute(o, collector)
+          puts "in visit_Arel_Attributes_Attribute"
           join_name = o.relation.table_alias || o.relation.name
+          puts "join_name: #{join_name}"
+          puts "quote table name: #{quote_table_name(join_name)}"
+          puts "quote column name: #{quote_column_name(o.name)}"
           collector << quote_table_name(join_name) << "." << quote_column_name(o.name)
         end
 
