@@ -156,16 +156,16 @@ module ActiveRecord
           map.register_type %r(binary)i,                Type::Binary.new
           map.register_type %r(double)i,                 Type::Float.new
           map.register_type(%r(decimal)i) do |sql_type|
-            scale = extract_scale(sql_type)
-            if scale == 0
-              ::ODBCAdapter::Type::SnowflakeInteger.new
-            else
+            # scale = extract_scale(sql_type)
+            # if scale == 0
+            #   ::ODBCAdapter::Type::SnowflakeInteger.new
+            # else
               Type::Decimal.new(precision: extract_precision(sql_type), scale: scale)
-            end
+            # end
           end
-          map.register_type %r(struct)i,                ::ODBCAdapter::Type::SnowflakeObject.new
-          map.register_type %r(array)i,                 ::ODBCAdapter::Type::ArrayOfValues.new
-          map.register_type %r(variant)i,               ::ODBCAdapter::Type::Variant.new
+          # map.register_type %r(struct)i,                ::ODBCAdapter::Type::SnowflakeObject.new
+          # map.register_type %r(array)i,                 ::ODBCAdapter::Type::ArrayOfValues.new
+          # map.register_type %r(variant)i,               ::ODBCAdapter::Type::Variant.new
         end
 
       end
