@@ -261,6 +261,10 @@ module Arel # :nodoc: all
           puts "IN AREL VISITOR#VISIT"
           dispatch_method = dispatch[object.class]
           puts "dispatch_method: #{dispatch_method}"
+          if dispatch_method == "visit_ActiveModel_Attribute"
+            puts "!!!dispatching activemodel attribute, want to know where the object is coming from"
+            puts caller
+          end
           if collector
             send dispatch_method, object, collector
           else
