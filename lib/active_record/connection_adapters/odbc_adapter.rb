@@ -35,7 +35,7 @@ module ActiveRecord
           end
 
         database_metadata = ::ODBCAdapter::DatabaseMetadata.new(connection)
-        database_metadata.adapter_class.new(config)
+        database_metadata.adapter_class.new(connection, logger, nil, config, database_metadata)
       end
 
       private
@@ -81,43 +81,47 @@ module ActiveRecord
       # when a connection is first established.
       attr_reader :database_metadata
 
-      def initialize(config_or_deprecated_connection, deprecated_logger = nil, deprecated_connection_options = nil, deprecated_config = nil)
-        puts "config or dep connection"
-        puts config_or_deprecated_connection
-        puts "dep logger"
-        puts deprecated_logger
-        puts "dep conn options"
-        puts deprecated_connection_options
-        puts "dep config"
-        puts deprecated_config
+      def initialize(config_or_deprecated_connection, deprecated_logger = nil, deprecated_connection_options = nil, deprecated_config = nil, database_metadata)
+      # def initialize(config_or_deprecated_connection, deprecated_logger = nil, deprecated_connection_options = nil, deprecated_config = nil)
+        # puts "config or dep connection"
+        # puts config_or_deprecated_connection
+        # puts "dep logger"
+        # puts deprecated_logger
+        # puts "dep conn options"
+        # puts deprecated_connection_options
+        # puts "dep config"
+        # puts deprecated_config
         # initialize is getting called twice. Second time the dep config is the
         # database metadata
         # Got to be coming from the new call at the end of this initializer
-        super
+        super(config_or_deprecated_connection, deprecated_logger, deprecated_connection_options, deprecated_config)
 
-        puts "before"
-        puts @raw_connection
-        puts "config"
-        puts @config
-        conn_params = @config.compact
-        # configure_time_options(connection)
+        # puts "before"
+        # puts @raw_connection
+        # puts "config"
+        # puts @config
+        # conn_params = @config.compact
+
+        configure_time_options(config_or_deprecated_connection)
         # super(connection, logger, config)
-        # @database_metadata = database_metadata
+        @database_metadata = database_metadata
         # @raw_connection = connection
-        @raw_connection, @config =
-          if conn_params.key?(:dsn)
-            odbc_dsn_connection(conn_params)
-          elsif conn_params.key?(:conn_str)
-            odbc_conn_str_connection(conn_params)
-          else
-            raise ArgumentError, 'No data source name (:dsn) or connection string (:conn_str) specified.'
-          end
 
-        puts "after"
-        puts @raw_connection
-        puts "config"
-        puts @config
-        # @database_metadata = ::ODBCAdapter::DatabaseMetadata.new(@raw_connection)
+        # @raw_connection, @config =
+        #   if conn_params.key?(:dsn)
+        #     odbc_dsn_connection(conn_params)
+        #   elsif conn_params.key?(:conn_str)
+        #     odbc_conn_str_connection(conn_params)
+        #   else
+        #     raise ArgumentError, 'No data source name (:dsn) or connection string (:conn_str) specified.'
+        #   end
+
+        # puts "after"
+        # puts @raw_connection
+        # puts "config"
+        # puts @config
+
+        @database_metadata = ::ODBCAdapter::DatabaseMetadata.new(@config_or_deprecated_connection)
         # puts "what is the adapter class?"
         # puts @database_metadata.adapter_class.name
         # @database_metadata.adapter_class.new(@raw_connection, logger, config, @database_metadata)
