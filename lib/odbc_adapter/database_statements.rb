@@ -47,6 +47,8 @@ module ODBCAdapter
       puts "IN ODBC to_sql_and_binds!"
       puts "initial binds: #{binds.class.name}"
       puts binds
+      puts "initial arel_or_sql_string: #{arel_or_sql_string.class.name}"
+      puts arel_or_sql_string
       # Arel::TreeManager -> Arel::Node
       if arel_or_sql_string.respond_to?(:ast)
         puts "responds to ast"
