@@ -134,14 +134,14 @@ module ActiveRecord
       # Build a new column object from the given options. Effectively the same
       # as super except that it also passes in the native type.
       # rubocop:disable Metrics/ParameterLists
-      def new_column(name, default, sql_type_metadata, null, native_type = nil)
-        ::ODBCAdapter::Column.new(name, default, sql_type_metadata, null, native_type)
+      def new_column(name, default, sql_type_metadata, null, native_type = nil, auto_incremented = false)
+        ::ODBCAdapter::Column.new(name, default, sql_type_metadata, null, native_type, auto_incremented)
       end
 
       # odbc_adapter does not support returning, so there are no return values from an insert
       def return_value_after_insert?(column) # :nodoc:
-        # column.auto_incremented
-        false
+        column.auto_incremented
+        # false
       end
 
       class << self
