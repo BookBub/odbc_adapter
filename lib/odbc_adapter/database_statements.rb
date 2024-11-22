@@ -51,7 +51,6 @@ module ODBCAdapter
       puts arel_or_sql_string
       # Arel::TreeManager -> Arel::Node
       if arel_or_sql_string.respond_to?(:ast)
-        puts "responds to ast"
         arel_or_sql_string = arel_or_sql_string.ast
       end
 
@@ -65,16 +64,13 @@ module ODBCAdapter
         collector = collector()
 
         if prepared_statements
-          puts "in prepared statements"
           collector.preparable = true
           puts "visitor class: #{visitor.class.name}"
           puts "collector class: #{collector.class.name}"
           puts "arel_or_sql_string class: #{arel_or_sql_string.class.name}"
-          puts "source: #{visitor.method(:compile).source_location}"
           sql, binds = visitor.compile(arel_or_sql_string, collector)
 
           if binds.length > bind_params_length
-            puts "more binds than bind params length"
             unprepared_statement do
               return to_sql_and_binds(arel_or_sql_string)
             end
@@ -301,6 +297,54 @@ module Arel # :nodoc: all
           dispatch[object.class] = dispatch[superklass]
           retry
         end
+    end
+  end
+end
+
+module Arel # :nodoc: all
+  module Collectors
+    class Composite
+      attr_accessor :preparable
+      attr_reader :retryable
+
+      def initialize(left, right)
+        @left = left
+        @right = right
+      end
+
+      def retryable=(retryable)
+        left.retryable = retryable
+        right.retryable = retryable
+        @retryable = retryable
+      end
+
+      def <<(str)
+        left << str
+        right << str
+        self
+      end
+
+      def add_bind(bind, &block)
+        puts "add bind: #{bind}"
+        left.add_bind bind, &block
+        right.add_bind bind, &block
+        puts "left: #{left}"
+        puts "right: #{right}"
+        self
+      end
+
+      def add_binds(binds, proc_for_binds = nil, &block)
+        left.add_binds(binds, proc_for_binds, &block)
+        right.add_binds(binds, proc_for_binds, &block)
+        self
+      end
+
+      def value
+        [left.value, right.value]
+      end
+
+      private
+        attr_reader :left, :right
     end
   end
 end
