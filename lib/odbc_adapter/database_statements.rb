@@ -1113,6 +1113,7 @@ module Arel # :nodoc: all
 
         def visit_Arel_Nodes_BindParam(o, collector)
           puts "^&*visit_Arel_Nodes_BindParam*&^"
+          puts "adding #{o.value}"
           collector.add_bind(o.value, &bind_block)
         end
 
