@@ -121,7 +121,7 @@ module ActiveRecord
         # puts "config"
         # puts @config
 
-        @database_metadata = ::ODBCAdapter::DatabaseMetadata.new(@config_or_deprecated_connection)
+        # @database_metadata = ::ODBCAdapter::DatabaseMetadata.new(@config_or_deprecated_connection)
         # puts "what is the adapter class?"
         # puts @database_metadata.adapter_class.name
         # @database_metadata.adapter_class.new(@raw_connection, logger, config, @database_metadata)
