@@ -1019,6 +1019,8 @@ module Arel # :nodoc: all
         def bind_block; BIND_BLOCK; end
 
         def visit_ActiveModel_Attribute(o, collector)
+          puts "^&*visit_ActiveModel_Attribute*&^"
+          puts "adding #{o}"
           collector.add_bind(o, &bind_block)
         end
 
