@@ -105,7 +105,7 @@ module ActiveRecord
         configure_time_options(config_or_deprecated_connection)
         # super(connection, logger, config)
         @database_metadata = database_metadata
-        # @raw_connection = connection
+        @raw_connection = config_or_deprecated_connection
 
         # @raw_connection, @config =
         #   if conn_params.key?(:dsn)
