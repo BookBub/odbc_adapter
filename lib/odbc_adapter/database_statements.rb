@@ -64,6 +64,8 @@ module ODBCAdapter
         if prepared_statements
           puts "in prepared statements"
           collector.preparable = true
+          puts "visitor class: #{visitor.class.name}"
+          puts "collector class: #{collector.class.name}"
           sql, binds = visitor.compile(arel_or_sql_string, collector)
 
           if binds.length > bind_params_length
