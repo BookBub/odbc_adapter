@@ -44,12 +44,15 @@ module ODBCAdapter
 
     def to_sql_and_binds(arel_or_sql_string, binds = [], preparable = nil) # :nodoc:
       puts "IN ODBC to_sql_and_binds!"
+      puts "initial binds"
+      puts binds
       # Arel::TreeManager -> Arel::Node
       if arel_or_sql_string.respond_to?(:ast)
         arel_or_sql_string = arel_or_sql_string.ast
       end
 
       if Arel.arel_node?(arel_or_sql_string) && !(String === arel_or_sql_string)
+        puts "arel node"
         unless binds.empty?
           raise "Passing bind parameters with an arel AST is forbidden. " \
             "The values must be stored on the AST directly"
@@ -58,21 +61,29 @@ module ODBCAdapter
         collector = collector()
 
         if prepared_statements
+          puts "in prepared statements"
           collector.preparable = true
           sql, binds = visitor.compile(arel_or_sql_string, collector)
 
           if binds.length > bind_params_length
+            puts "more binds than bind params length"
             unprepared_statement do
               return to_sql_and_binds(arel_or_sql_string)
             end
           end
           preparable = collector.preparable
         else
+          puts "not prepared statements"
           sql = visitor.compile(arel_or_sql_string, collector)
         end
+        puts "binds after transform:"
+        puts binds
         [sql.freeze, binds, preparable]
       else
+        puts "not arel node"
         arel_or_sql_string = arel_or_sql_string.dup.freeze unless arel_or_sql_string.frozen?
+        puts "binds after transform:"
+        puts binds
         [arel_or_sql_string, binds, preparable]
       end
     end
