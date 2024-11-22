@@ -70,6 +70,7 @@ module ODBCAdapter
           puts "visitor class: #{visitor.class.name}"
           puts "collector class: #{collector.class.name}"
           puts "arel_or_sql_string class: #{arel_or_sql_string.class.name}"
+          puts "source: #{visitor.method(:compile).source_location}"
           sql, binds = visitor.compile(arel_or_sql_string, collector)
 
           if binds.length > bind_params_length
