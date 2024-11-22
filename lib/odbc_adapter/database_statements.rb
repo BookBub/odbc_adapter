@@ -84,6 +84,8 @@ module ODBCAdapter
           puts "not prepared statements"
           sql = visitor.compile(arel_or_sql_string, collector)
         end
+        puts "sql after transform:"
+        puts sql
         puts "binds after transform:"
         puts binds
         puts "#####################################"
@@ -91,6 +93,8 @@ module ODBCAdapter
       else
         puts "not arel node"
         arel_or_sql_string = arel_or_sql_string.dup.freeze unless arel_or_sql_string.frozen?
+        puts "sql after transform:"
+        puts sql
         puts "binds after transform:"
         puts binds
         puts "#####################################"
