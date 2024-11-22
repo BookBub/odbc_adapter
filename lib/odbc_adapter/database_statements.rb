@@ -42,6 +42,42 @@ module ODBCAdapter
       end
     end
 
+    def to_sql_and_binds(arel_or_sql_string, binds = [], preparable = nil) # :nodoc:
+      puts "IN ODBC to_sql_and_binds!"
+      # Arel::TreeManager -> Arel::Node
+      if arel_or_sql_string.respond_to?(:ast)
+        arel_or_sql_string = arel_or_sql_string.ast
+      end
+
+      if Arel.arel_node?(arel_or_sql_string) && !(String === arel_or_sql_string)
+        unless binds.empty?
+          raise "Passing bind parameters with an arel AST is forbidden. " \
+            "The values must be stored on the AST directly"
+        end
+
+        collector = collector()
+
+        if prepared_statements
+          collector.preparable = true
+          sql, binds = visitor.compile(arel_or_sql_string, collector)
+
+          if binds.length > bind_params_length
+            unprepared_statement do
+              return to_sql_and_binds(arel_or_sql_string)
+            end
+          end
+          preparable = collector.preparable
+        else
+          sql = visitor.compile(arel_or_sql_string, collector)
+        end
+        [sql.freeze, binds, preparable]
+      else
+        arel_or_sql_string = arel_or_sql_string.dup.freeze unless arel_or_sql_string.frozen?
+        [arel_or_sql_string, binds, preparable]
+      end
+    end
+    private :to_sql_and_binds
+
     # Executes delete +sql+ statement in the context of this connection using
     # +binds+ as the bind substitutes. +name+ is logged along with
     # the executed +sql+ statement.
