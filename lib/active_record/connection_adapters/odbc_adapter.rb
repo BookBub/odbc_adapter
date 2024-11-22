@@ -95,12 +95,16 @@ module ActiveRecord
         # Got to be coming from the new call at the end of this initializer
         super
 
+        puts "before"
+        puts @raw_connection
+        puts "config"
+        puts @config
         conn_params = @config.compact
         # configure_time_options(connection)
         # super(connection, logger, config)
         # @database_metadata = database_metadata
         # @raw_connection = connection
-        @raw_connection, _config =
+        @raw_connection, @config =
           if conn_params.key?(:dsn)
             odbc_dsn_connection(conn_params)
           elsif conn_params.key?(:conn_str)
@@ -109,10 +113,13 @@ module ActiveRecord
             raise ArgumentError, 'No data source name (:dsn) or connection string (:conn_str) specified.'
           end
 
-
-        @database_metadata = ::ODBCAdapter::DatabaseMetadata.new(@raw_connection)
-        puts "what is the adapter class?"
-        puts @database_metadata.adapter_class.name
+        puts "after"
+        puts @raw_connection
+        puts "config"
+        puts @config
+        # @database_metadata = ::ODBCAdapter::DatabaseMetadata.new(@raw_connection)
+        # puts "what is the adapter class?"
+        # puts @database_metadata.adapter_class.name
         # @database_metadata.adapter_class.new(@raw_connection, logger, config, @database_metadata)
       end
 
