@@ -10,6 +10,7 @@ require 'odbc_adapter/schema_statements'
 
 require 'odbc_adapter/column'
 require 'odbc_adapter/column_metadata'
+require 'odbc_adapter/connection_setup'
 require 'odbc_adapter/database_metadata'
 require 'odbc_adapter/registry'
 require 'odbc_adapter/version'
@@ -19,19 +20,24 @@ module ActiveRecord
     class << self
       # Build a new ODBC connection with the given configuration.
       def odbc_connection(config)
-        config = config.symbolize_keys
+        setup = ::ODBCAdapter::ConnectionSetup.new(config.symbolize_keys)
+        setup.build
 
-        connection, config =
-          if config.key?(:dsn)
-            odbc_dsn_connection(config)
-          elsif config.key?(:conn_str)
-            odbc_conn_str_connection(config)
-          else
-            raise ArgumentError, 'No data source name (:dsn) or connection string (:conn_str) specified.'
-          end
+        database_metadata = ::ODBCAdapter::DatabaseMetadata.new(setup.connection)
+        database_metadata.adapter_class.new(setup.connection, logger, nil, setup.config, database_metadata)
 
-        database_metadata = ::ODBCAdapter::DatabaseMetadata.new(connection)
-        database_metadata.adapter_class.new(connection, logger, nil, config, database_metadata)
+        # config = config.symbolize_keys
+        # connection, config =
+        #   if config.key?(:dsn)
+        #     odbc_dsn_connection(config)
+        #   elsif config.key?(:conn_str)
+        #     odbc_conn_str_connection(config)
+        #   else
+        #     raise ArgumentError, 'No data source name (:dsn) or connection string (:conn_str) specified.'
+        #   end
+
+        # database_metadata = ::ODBCAdapter::DatabaseMetadata.new(connection)
+        # database_metadata.adapter_class.new(connection, logger, nil, config, database_metadata)
       end
 
       private
@@ -81,10 +87,20 @@ module ActiveRecord
         super(config_or_deprecated_connection, deprecated_logger, deprecated_connection_options, deprecated_config)
 
         if config_or_deprecated_connection.is_a?(Hash)
-          # TODO:figure things out
-          with_raw_connection do |conn|
-            @database_metadata = ::ODBCAdapter::DatabaseMetadata.new(conn)
+          setup = ::ODBCAdapter::ConnectionSetup.new(config_or_deprecated_connection.symbolize_keys)
+          setup.build
+
+          @raw_connection = setup.connection
+
+          if database_metadata
+            @database_metadata = database_metadata
+          else
+            @database_metadata = ::ODBCAdapter::DatabaseMetadata.new(setup.connection)
           end
+          # TODO:figure things out
+          # with_raw_connection do |conn|
+          #   @database_metadata = ::ODBCAdapter::DatabaseMetadata.new(conn)
+          # end
         else
           configure_time_options(config_or_deprecated_connection)
           @raw_connection = config_or_deprecated_connection
