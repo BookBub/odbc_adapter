@@ -80,13 +80,15 @@ module ActiveRecord
       def initialize(config_or_deprecated_connection, deprecated_logger = nil, deprecated_connection_options = nil, deprecated_config = nil, database_metadata = nil)
         super(config_or_deprecated_connection, deprecated_logger, deprecated_connection_options, deprecated_config)
 
-        configure_time_options(config_or_deprecated_connection) unless config_or_deprecated_connection.is_a?(Hash)
-        @raw_connection = config_or_deprecated_connection
-
-        if @database_metadata
-          @database_metadata = database_metadata
+        if config_or_deprecated_connection.is_a?(Hash)
+          # TODO:figure things out
+          with_raw_connection do |conn|
+            @database_metadata = ::ODBCAdapter::DatabaseMetadata.new(conn)
+          end
         else
-          @database_metadata = ::ODBCAdapter::DatabaseMetadata.new(@raw_connection)
+          configure_time_options(config_or_deprecated_connection)
+          @raw_connection = config_or_deprecated_connection
+          @database_metadata = database_metadata
         end
       end
 
