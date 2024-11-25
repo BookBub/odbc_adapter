@@ -2,10 +2,7 @@ module ActiveRecord
   module ConnectionAdapters
     module ODBC
       module Quoting
-        # Quotes a string, escaping any ' (single quote) characters.
-        def quote_string(string)
-          string.gsub(/\'/, "''")
-        end
+        extend ActiveSupport::Concern
 
         module ClassMethods # :nodoc:
           # Returns a quoted form of the column name.
@@ -26,6 +23,11 @@ module ActiveRecord
 
             "#{quote_char.chr}#{name}#{quote_char.chr}"
           end
+        end
+
+        # Quotes a string, escaping any ' (single quote) characters.
+        def quote_string(string)
+          string.gsub(/\'/, "''")
         end
 
         # Ideally, we'd return an ODBC date or timestamp literal escape
