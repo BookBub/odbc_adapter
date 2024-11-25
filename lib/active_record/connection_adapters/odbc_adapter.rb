@@ -31,7 +31,7 @@ module ActiveRecord
           end
 
         database_metadata = ::ODBCAdapter::DatabaseMetadata.new(connection)
-        database_metadata.adapter_class.new(connection, logger, config, database_metadata)
+        database_metadata.adapter_class.new(connection, logger, nil, config, database_metadata)
       end
 
       private
@@ -77,10 +77,12 @@ module ActiveRecord
       # when a connection is first established.
       attr_reader :database_metadata
 
-      def initialize(connection, logger, config, database_metadata)
-        configure_time_options(connection)
-        super(connection, logger, config)
+      def initialize(config_or_deprecated_connection, deprecated_logger = nil, deprecated_connection_options = nil, deprecated_config = nil, database_metadata)
+        super(config_or_deprecated_connection, deprecated_logger, deprecated_connection_options, deprecated_config)
+
+        configure_time_options(config_or_deprecated_connection)
         @database_metadata = database_metadata
+        @raw_connection = config_or_deprecated_connection
       end
 
       # Returns the human-readable name of the adapter.
@@ -94,34 +96,38 @@ module ActiveRecord
         true
       end
 
+      # ODBC adapter does not support the returning clause
+      def supports_insert_returning?
+        false
+      end
+
       # CONNECTION MANAGEMENT ====================================
 
       # Checks whether the connection to the database is still active. This
       # includes checking whether the database is actually capable of
       # responding, i.e. whether the connection isn't stale.
       def active?
-        @connection.connected?
+        @raw_connection.connected?
       end
 
       # Disconnects from the database if already connected, and establishes a
       # new connection with the database.
-      def reconnect!
+      def reconnect
         disconnect!
-        @connection =
+        @raw_connection =
           if @config.key?(:dsn)
             ODBC.connect(@config[:dsn], @config[:username], @config[:password])
           else
             ODBC::Database.new.drvconnect(@config[:driver])
           end
-        configure_time_options(@connection)
-        super
+        configure_time_options(@raw_connection)
       end
       alias reset! reconnect!
 
       # Disconnects from the database if already connected. Otherwise, this
       # method does nothing.
       def disconnect!
-        @connection.disconnect if @connection.connected?
+        @raw_connection.disconnect if @raw_connection.connected?
       end
 
       # Build a new column object from the given options. Effectively the same
@@ -129,6 +135,11 @@ module ActiveRecord
       # rubocop:disable Metrics/ParameterLists
       def new_column(name, default, sql_type_metadata, null, native_type = nil)
         ::ODBCAdapter::Column.new(name, default, sql_type_metadata, null, native_type)
+      end
+
+      # odbc_adapter does not support returning, so there are no return values from an insert
+      def return_value_after_insert?(column) # :nodoc:
+        false
       end
 
       protected
