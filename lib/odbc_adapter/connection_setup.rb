@@ -8,7 +8,7 @@ module ODBCAdapter
     attr_reader :config
     attr_reader :connection
 
-    def new(config)
+    def initialize(config)
       @config = config
       @connection = nil
     end
