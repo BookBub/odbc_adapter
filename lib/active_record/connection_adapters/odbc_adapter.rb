@@ -69,7 +69,7 @@ module ActiveRecord
     class ODBCAdapter < AbstractAdapter
       include ::ODBCAdapter::DatabaseLimits
       include ::ODBCAdapter::DatabaseStatements
-      include ::ODBCAdapter::Quoting
+      include ODBC::Quoting
       include ::ODBCAdapter::SchemaStatements
 
       ADAPTER_NAME = 'ODBC'.freeze
