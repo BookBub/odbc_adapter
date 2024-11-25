@@ -5,7 +5,7 @@ require 'odbc'
 require 'odbc_adapter/database_limits'
 require 'odbc_adapter/database_statements'
 require 'odbc_adapter/error'
-require 'active_record/connection_adapters/odbc_adapter/quoting'
+require 'active_record/connection_adapters/odbc/quoting'
 require 'odbc_adapter/schema_statements'
 
 require 'odbc_adapter/column'

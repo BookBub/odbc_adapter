@@ -1,6 +1,6 @@
 module ActiveRecord
   module ConnectionAdapters
-    class ODBCAdapter
+    module ODBC
       module Quoting
         # Quotes a string, escaping any ' (single quote) characters.
         def quote_string(string)
