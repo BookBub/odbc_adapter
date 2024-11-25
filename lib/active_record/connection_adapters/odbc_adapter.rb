@@ -14,6 +14,9 @@ require 'odbc_adapter/connection_setup'
 require 'odbc_adapter/database_metadata'
 require 'odbc_adapter/registry'
 require 'odbc_adapter/version'
+require "active_record/connection_adapters/postgresql/quoting"
+require "active_record/connection_adapters/postgresql/utils"
+require "pg"
 
 module ActiveRecord
   class Base
@@ -36,6 +39,7 @@ module ActiveRecord
       include ::ODBCAdapter::DatabaseStatements
       include ::ODBCAdapter::Quoting
       include ::ODBCAdapter::SchemaStatements
+      include ::ActiveRecord::ConnectionAdapters::PostgreSQL::Quoting
 
       ADAPTER_NAME = 'ODBC'.freeze
       BOOLEAN_TYPE = 'BOOLEAN'.freeze
@@ -49,16 +53,32 @@ module ActiveRecord
       attr_reader :database_metadata
 
       def initialize(config_or_deprecated_connection, deprecated_logger = nil, deprecated_connection_options = nil, deprecated_config = nil, database_metadata = nil)
-        super(config_or_deprecated_connection, deprecated_logger, deprecated_connection_options, deprecated_config)
-        @raw_connection = config_or_deprecated_connection
+        if self.class.name == "ActiveRecord::ConnectionAdapters::ODBCAdapter"
+          return ActiveRecord::Base.odbc_connection(config_or_deprecated_connection)
+        end
 
-        if database_metadata
-          @database_metadata = database_metadata
+        puts "Adapter implementation class: #{self.class.name}"
+
+        super(config_or_deprecated_connection, deprecated_logger, deprecated_connection_options, deprecated_config)
+
+        if config_or_deprecated_connection.is_a?(Hash)
+          setup = ::ODBCAdapter::ConnectionSetup.new(config_or_deprecated_connection.symbolize_keys)
+          setup.build
+
+          @raw_connection = setup.connection
+
+          if database_metadata
+            @database_metadata = database_metadata
+          else
+            @database_metadata = ::ODBCAdapter::DatabaseMetadata.new(setup.connection)
+          end
         else
-          @database_metadata = ::ODBCAdapter::DatabaseMetadata.new(@raw_connection)
+          @raw_connection = config_or_deprecated_connection
+          @database_metadata = database_metadata
         end
 
         configure_time_options(@raw_connection)
+        reset_transaction
       end
 
       # Returns the human-readable name of the adapter.
@@ -83,7 +103,7 @@ module ActiveRecord
       # includes checking whether the database is actually capable of
       # responding, i.e. whether the connection isn't stale.
       def active?
-        @raw_connection.connected?
+        connected?
       end
 
       # Disconnects from the database if already connected, and establishes a
