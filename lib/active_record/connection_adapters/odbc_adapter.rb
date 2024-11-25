@@ -87,6 +87,10 @@ module ActiveRecord
         super(config_or_deprecated_connection, deprecated_logger, deprecated_connection_options, deprecated_config)
 
         if config_or_deprecated_connection.is_a?(Hash)
+          puts "setting up connection"
+          puts config_or_deprecated_connection
+          puts "symbolize keys"
+          puts config_or_deprecated_connection.symbolize_keys
           setup = ::ODBCAdapter::ConnectionSetup.new(config_or_deprecated_connection.symbolize_keys)
           setup.build
 
