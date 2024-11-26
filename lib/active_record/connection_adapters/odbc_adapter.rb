@@ -57,25 +57,25 @@ module ActiveRecord
           return ActiveRecord::Base.odbc_connection(config_or_deprecated_connection)
         end
 
-        puts "Adapter implementation class: #{self.class.name}"
+        # puts "Adapter implementation class: #{self.class.name}"
 
         super(config_or_deprecated_connection, deprecated_logger, deprecated_connection_options, deprecated_config)
 
-        if config_or_deprecated_connection.is_a?(Hash)
-          setup = ::ODBCAdapter::ConnectionSetup.new(config_or_deprecated_connection.symbolize_keys)
-          setup.build
+        # if config_or_deprecated_connection.is_a?(Hash)
+        #   setup = ::ODBCAdapter::ConnectionSetup.new(config_or_deprecated_connection.symbolize_keys)
+        #   setup.build
 
-          @raw_connection = setup.connection
+        #   @raw_connection = setup.connection
 
-          if database_metadata
-            @database_metadata = database_metadata
-          else
-            @database_metadata = ::ODBCAdapter::DatabaseMetadata.new(setup.connection)
-          end
-        else
+        #   if database_metadata
+        #     @database_metadata = database_metadata
+        #   else
+        #     @database_metadata = ::ODBCAdapter::DatabaseMetadata.new(setup.connection)
+        #   end
+        # else
           @raw_connection = config_or_deprecated_connection
           @database_metadata = database_metadata
-        end
+        # end
 
         configure_time_options(@raw_connection)
         reset_transaction
