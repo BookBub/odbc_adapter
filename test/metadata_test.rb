@@ -2,7 +2,7 @@ require 'test_helper'
 
 class MetadataTest < Minitest::Test
   def test_data_sources
-    assert_equal %w[ar_internal_metadata todos users], User.connection.data_sources.sort
+    assert_equal %w[ar_internal_metadata schema_migrations todos users], User.connection.data_sources.sort
   end
 
   def test_column_names
