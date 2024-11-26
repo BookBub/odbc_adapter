@@ -77,12 +77,17 @@ module ActiveRecord
       # when a connection is first established.
       attr_reader :database_metadata
 
-      def initialize(config_or_deprecated_connection, deprecated_logger = nil, deprecated_connection_options = nil, deprecated_config = nil, database_metadata)
+      def initialize(config_or_deprecated_connection, deprecated_logger = nil, deprecated_connection_options = nil, deprecated_config = nil, database_metadata = nil)
         super(config_or_deprecated_connection, deprecated_logger, deprecated_connection_options, deprecated_config)
-
-        configure_time_options(config_or_deprecated_connection)
-        @database_metadata = database_metadata
         @raw_connection = config_or_deprecated_connection
+
+        if database_metadata
+          @database_metadata = database_metadata
+        else
+          @database_metadata = ::ODBCAdapter::DatabaseMetadata.new(@raw_connection)
+        end
+
+        configure_time_options(@raw_connection)
       end
 
       # Returns the human-readable name of the adapter.
