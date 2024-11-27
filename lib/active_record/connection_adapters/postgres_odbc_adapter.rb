@@ -2,11 +2,9 @@ require "active_record/connection_adapters/postgresql/quoting"
 require "active_record/connection_adapters/postgresql/utils"
 require "pg"
 
-module ODBCAdapter
-  module Adapters
-    # Overrides specific to PostgreSQL. Mostly taken from
-    # ActiveRecord::ConnectionAdapters::PostgreSQLAdapter
-    class PostgreSQLODBCAdapter < ActiveRecord::ConnectionAdapters::ODBCAdapter
+module ActiveRecord
+  module ConnectionAdapters
+    class PostgresODBCAdapter < ODBCAdapter
       include ::ActiveRecord::ConnectionAdapters::PostgreSQL::Quoting
 
       BOOLEAN_TYPE = 'bool'.freeze
@@ -14,6 +12,10 @@ module ODBCAdapter
 
       alias create insert
 
+      def initialize(config_or_deprecated_connection, deprecated_logger = nil, deprecated_connection_options = nil, deprecated_config = nil, database_metadata = nil)
+        puts "using new PG adapter"
+        super
+      end
       # Override to handle booleans appropriately
       def native_database_types
         @native_database_types ||= super.merge(boolean: { name: 'bool' })
