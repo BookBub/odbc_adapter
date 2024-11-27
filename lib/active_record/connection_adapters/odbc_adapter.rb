@@ -180,17 +180,6 @@ module ActiveRecord
           connection.use_time = true
         end
       end
-
-      def reconnect
-        disconnect!
-        @raw_connection =
-          if @config.key?(:dsn)
-            ::ODBCAdapter::ConnectCommon.odbc_dsn_connection(@config)[0]
-          else
-            ::ODBCAdapter::ConnectCommon.odbc_conn_str_connection(@config)[0]
-          end
-        configure_time_options(@raw_connection)
-      end
     end
   end
 end
