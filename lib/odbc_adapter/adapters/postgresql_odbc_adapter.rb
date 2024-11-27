@@ -1,8 +1,14 @@
+require "active_record/connection_adapters/postgresql/quoting"
+require "active_record/connection_adapters/postgresql/utils"
+require "pg"
+
 module ODBCAdapter
   module Adapters
     # Overrides specific to PostgreSQL. Mostly taken from
     # ActiveRecord::ConnectionAdapters::PostgreSQLAdapter
     class PostgreSQLODBCAdapter < ActiveRecord::ConnectionAdapters::ODBCAdapter
+      include ::ActiveRecord::ConnectionAdapters::PostgreSQL::Quoting
+
       BOOLEAN_TYPE = 'bool'.freeze
       PRIMARY_KEY  = 'SERIAL PRIMARY KEY'.freeze
 

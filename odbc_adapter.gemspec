@@ -29,4 +29,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rubocop', '~> 0.48'
   spec.add_development_dependency 'simplecov', '~> 0.14'
   spec.add_development_dependency 'appraisal'
+  spec.add_development_dependency 'pg'
 end
