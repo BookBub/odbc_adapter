@@ -162,14 +162,6 @@ module ODBCAdapter
       rows
     end
 
-    def bind_params(binds, sql)
-      prepared_binds = *prepared_binds(binds)
-      prepared_binds.each.with_index(1) do |val, ind|
-        sql = sql.gsub("$#{ind}", "'#{val}'")
-      end
-      sql
-    end
-
     # Assume received identifier is in DBMS's data dictionary case.
     def format_case(identifier)
       if database_metadata.upcase_identifiers?

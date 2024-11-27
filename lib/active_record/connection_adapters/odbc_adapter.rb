@@ -102,12 +102,6 @@ module ActiveRecord
       end
       alias reset! reconnect!
 
-      # Disconnects from the database if already connected. Otherwise, this
-      # method does nothing.
-      def disconnect!
-        @raw_connection.disconnect if @raw_connection.connected?
-      end
-
       # Build a new column object from the given options. Effectively the same
       # as super except that it also passes in the native type.
       # rubocop:disable Metrics/ParameterLists
