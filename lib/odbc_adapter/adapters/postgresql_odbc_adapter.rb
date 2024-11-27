@@ -132,7 +132,7 @@ module ODBCAdapter
       end
 
       def connected?
-        !(@raw_connection.nil? || @raw_connection.finished?)
+        !@raw_connection.nil?
       end
 
       protected
