@@ -103,6 +103,8 @@ module ActiveRecord
       # includes checking whether the database is actually capable of
       # responding, i.e. whether the connection isn't stale.
       def active?
+        puts "where is connected defined?"
+        puts method(:connected?).source_location
         connected?
       end
 
