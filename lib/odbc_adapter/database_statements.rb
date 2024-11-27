@@ -213,7 +213,15 @@ module ODBCAdapter
     end
 
     def prepared_binds(binds)
-      binds.map(&:value_for_database).map { |bind| _type_cast(bind) }
+      binds.map do |bind|
+        if bind.respond_to?(:value_for_database)
+          bind.value_for_database
+        else
+          bind
+        end
+      end
+      .map { |bind| _type_cast(bind) }
+      # binds.map(&:value_for_database).map { |bind| _type_cast(bind) }
     end
 
     def bind_params(binds, sql)
