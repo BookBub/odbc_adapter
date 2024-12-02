@@ -22,10 +22,10 @@ module ActiveRecord
       def odbc_connection(config)
         config = config.symbolize_keys
         setup = ::ODBCAdapter::ConnectionSetup.new(config.symbolize_keys)
-        setup.build
+        connection = setup.build
 
-        database_metadata = ::ODBCAdapter::DatabaseMetadata.new(setup.connection)
-        database_metadata.adapter_class.new(setup.connection, logger, nil, setup.config, database_metadata)
+        database_metadata = ::ODBCAdapter::DatabaseMetadata.new(connection)
+        database_metadata.adapter_class.new(connection, logger, nil, setup.config, database_metadata)
       end
     end
   end
