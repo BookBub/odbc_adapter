@@ -40,7 +40,7 @@ module ODBCAdapter
       # The appropriate SQL for :primary_key is hard to derive as
       # ODBC doesn't provide any info on a DBMS's native syntax for
       # autoincrement columns. So we use a lookup instead.
-      return adapter.class::PRIMARY_KEY if abstract == :primary_key
+      return @adapter.primary_key_type if abstract == :primary_key
       selected_row = rows[0]
 
       # If more than one native type corresponds to the SQL type we're

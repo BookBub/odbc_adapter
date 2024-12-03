@@ -131,6 +131,10 @@ module ODBCAdapter
         "DISTINCT #{columns}, #{order_columns * ', '}"
       end
 
+      def primary_key_type
+        PRIMARY_KEY
+      end
+
       def connected?
         !@raw_connection.nil?
       end

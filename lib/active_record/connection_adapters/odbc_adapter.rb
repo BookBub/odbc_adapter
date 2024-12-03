@@ -16,19 +16,19 @@ require 'odbc_adapter/registry'
 require 'odbc_adapter/version'
 
 module ActiveRecord
-  class Base
-    class << self
-      # Build a new ODBC connection with the given configuration.
-      def odbc_connection(config)
-        config = config.symbolize_keys
-        setup = ::ODBCAdapter::ConnectionSetup.new(config.symbolize_keys)
-        connection = setup.build
-
-        database_metadata = ::ODBCAdapter::DatabaseMetadata.new(connection)
-        database_metadata.adapter_class.new(connection, logger, nil, setup.config, database_metadata)
-      end
-    end
-  end
+  # class Base
+  #   class << self
+  #     # Build a new ODBC connection with the given configuration.
+  #     def odbc_connection(config)
+  #       config = config.symbolize_keys
+  #       setup = ::ODBCAdapter::ConnectionSetup.new(config.symbolize_keys)
+  #       setup.build
+  #
+  #       database_metadata = ::ODBCAdapter::DatabaseMetadata.new(setup.connection)
+  #       database_metadata.adapter_class.new(setup.connection, logger, nil, setup.config, database_metadata)
+  #     end
+  #   end
+  # end
 
   module ConnectionAdapters
     class ODBCAdapter < AbstractAdapter
@@ -60,13 +60,15 @@ module ActiveRecord
         else
           @database_metadata = ::ODBCAdapter::DatabaseMetadata.new(@raw_connection)
         end
-
-        configure_time_options(@raw_connection)
       end
 
       # Returns the human-readable name of the adapter.
       def adapter_name
         ADAPTER_NAME
+      end
+
+      def primary_key_type
+        'SERIAL PRIMARY KEY' # TODO: Set per adapater type
       end
 
       # Does this adapter support migrations? Backend specific, as the abstract
@@ -91,11 +93,12 @@ module ActiveRecord
 
       # establishes a new connection with the database.
       def connect
-        if @config.key?(:dsn)
-          @raw_connection = ODBC.connect(@config[:dsn], @config[:username], @config[:password])
-        else
-          @raw_connection = ODBC::Database.new.drvconnect(@config[:driver])
-        end
+        @raw_connection =
+          if @config.key?(:dsn)
+            ODBC.connect(@config[:dsn], @config[:username], @config[:password])
+          else
+            ODBC::Database.new.drvconnect(@config[:driver])
+          end
       end
 
       # Disconnects from the database if already connected, and establishes a
