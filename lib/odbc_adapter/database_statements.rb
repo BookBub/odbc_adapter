@@ -8,7 +8,7 @@ module ODBCAdapter
     # Executes the SQL statement in the context of this connection.
     # Returns the number of rows affected.
     def execute(sql, name = nil, binds = [])
-      sql = transform_query(sql)
+      # sql = transform_query(sql)
       log(sql, name) do
         sql = bind_params(binds, sql) if prepared_statements
         with_raw_connection do |conn|
@@ -34,7 +34,7 @@ module ODBCAdapter
       attrs = @config[:conn_str].split(';').map { |option| option.split('=', 2) }.to_h
       odbc_module = attrs['ENCODING'] == 'utf8' ? ODBC_UTF8 : ODBC
 
-      sql = transform_query(sql)
+      # sql = transform_query(sql)
       log(sql, name) do
         sql = bind_params(binds, sql) if prepared_statements
 
