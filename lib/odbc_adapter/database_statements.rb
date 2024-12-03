@@ -30,7 +30,7 @@ module ODBCAdapter
     # Executes +sql+ statement in the context of this connection using
     # +binds+ as the bind substitutes. +name+ is logged along with
     # the executed +sql+ statement.
-    def internal_exec_query(sql, name = 'SQL', binds = [], prepare: false) # rubocop:disable Lint/UnusedMethodArgument
+    def internal_exec_query(sql, name = 'SQL', binds = [], prepare: false, allow_retry: false) # rubocop:disable Lint/UnusedMethodArgument
       attrs = @config[:conn_str].split(';').map { |option| option.split('=', 2) }.to_h
       odbc_module = attrs['ENCODING'] == 'utf8' ? ODBC_UTF8 : ODBC
 
