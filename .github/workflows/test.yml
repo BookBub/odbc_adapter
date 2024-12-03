@@ -41,6 +41,8 @@ jobs:
         run: bundle install
       - name: driver setup
         run: ./bin/ci-setup
+      - name: debug
+        run: odbcinst -j
       - name: Run tests
         env:
           DB: "postgres"
