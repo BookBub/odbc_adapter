@@ -43,6 +43,14 @@ jobs:
         run: ./bin/ci-setup
       - name: debug
         run: odbcinst -j
+      - name: print odbc ini
+        run: cat /etc/odbc.ini
+      - name: print odbcinst ini
+        run: cat /etc/odbcinst.ini
+      - name: print USER DATA SOURCES
+        run: cat /home/runner/.odbc.ini
+      - name: print FILE DATA SOURCES
+        run: cat /etc/ODBCDataSources
       - name: Run tests
         env:
           DB: "postgres"
