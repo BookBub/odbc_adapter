@@ -50,7 +50,12 @@ module ActiveRecord
 
       def initialize(config_or_deprecated_connection, deprecated_logger = nil, deprecated_connection_options = nil, deprecated_config = nil, database_metadata = nil)
         super(config_or_deprecated_connection, deprecated_logger, deprecated_connection_options, deprecated_config)
-        @raw_connection = config_or_deprecated_connection
+        if config_or_deprecated_connection
+          config = config_or_deprecated_connection
+          setup = ::ODBCAdapter::ConnectionSetup.new(config.symbolize_keys)
+          setup.build
+          @config = setup.config
+        end
         connect
         @connection ||= @raw_connection
 
