@@ -226,8 +226,9 @@ module ODBCAdapter
 
     def bind_params(binds, sql)
       prepared_binds = *prepared_binds(binds)
+      # TODO build more confidence in this actually being right
       prepared_binds.each.with_index(1) do |val, ind|
-        sql = sql.gsub("$#{ind}", "'#{val}'")
+        sql = sql.sub("?", "'#{val}'")
       end
       sql
     end
