@@ -5,10 +5,23 @@ module ODBCAdapter
     SQL_NULLABLE = 1
     SQL_NULLABLE_UNKNOWN = 2
 
+    def preprocess_query(sql)
+      # check_if_write_query(sql)
+      # mark_transaction_written_if_write(sql)
+      #
+      # # We call transformers after the write checks so we don't add extra parsing work.
+      # ActiveRecord.query_transformers.each do |transformer|
+      #   sql = transformer.call(sql, self)
+      # end
+      # TODO Do we want to preprocess?
+
+      sql
+    end
+
     # Executes the SQL statement in the context of this connection.
     # Returns the number of rows affected.
     def execute(sql, name = nil, binds = [])
-      # sql = transform_query(sql)
+      sql = preprocess_query(sql)
       log(sql, name) do
         sql = bind_params(binds, sql) if prepared_statements
         with_raw_connection do |conn|
@@ -34,10 +47,9 @@ module ODBCAdapter
       attrs = @config[:conn_str].split(';').map { |option| option.split('=', 2) }.to_h
       odbc_module = attrs['ENCODING'] == 'utf8' ? ODBC_UTF8 : ODBC
 
-      # sql = transform_query(sql)
+      sql = preprocess_query(sql)
       log(sql, name) do
         sql = bind_params(binds, sql) if prepared_statements
-
         begin
           stmt = with_raw_connection do |conn|
             conn.run(sql)
@@ -136,7 +148,8 @@ module ODBCAdapter
                       when [ODBC::SQL_TIME, ODBC::SQL_TYPE_TIME].include?(column.type)
                         value.to_time
                       when [ODBC::SQL_DATETIME, ODBC::SQL_TIMESTAMP, ODBC::SQL_TYPE_TIMESTAMP].include?(column.type)
-                        value.to_datetime
+                        ODBC::to_time(value)
+                        # value.to_datetime TODO: What?
                       # when ["ARRAY"?, "OBJECT"?, "VARIANT"?].include?(column.type)
                         # TODO: "ARRAY", "OBJECT", "VARIANT" all return as VARCHAR
                         # so we'd need to parse them to make them the correct type
