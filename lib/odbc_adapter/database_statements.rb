@@ -20,14 +20,14 @@ module ODBCAdapter
 
     # Executes the SQL statement in the context of this connection.
     # Returns the number of rows affected.
-    def execute(sql, name = nil, binds = [])
+    def raw_execute(sql, name, async: false, allow_retry: false, materialize_transactions: true)
       sql = preprocess_query(sql)
-      log(sql, name) do
+      # log(sql, name) do
         sql = bind_params(binds, sql) if prepared_statements
         with_raw_connection do |conn|
           conn.do(sql)
         end
-      end
+      # end
     end
 
     # Executes an INSERT query and returns the new record's ID
