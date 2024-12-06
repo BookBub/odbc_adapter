@@ -34,15 +34,8 @@ module ActiveRecord
       # when a connection is first established.
       attr_reader :database_metadata
 
-      # Overriding `new` so we can return a copy of the right subclass from the initializer
-      def self.new(*args)
-        obj=allocate
-        obj.send(:initialize, *args)
-      end
-
-      def initialize(config_or_deprecated_connection, deprecated_logger = nil, deprecated_connection_options = nil, deprecated_config = nil)
-
-
+      def initialize(config_or_deprecated_connection, deprecated_logger = nil, deprecated_connection_options = nil, deprecated_config = nil, database_metadata = nil)
+        super(config_or_deprecated_connection, deprecated_logger, deprecated_connection_options, deprecated_config)
         @config = deprecated_config
         if config_or_deprecated_connection.try(:get_info, ODBC.const_get("SQL_DBMS_NAME"))
           @raw_connection = config_or_deprecated_connection
@@ -56,14 +49,7 @@ module ActiveRecord
         end
         @connection ||= @raw_connection
 
-        if self.class.name == "ActiveRecord::ConnectionAdapters::ODBCAdapter"
-          database_metadata = ::ODBCAdapter::DatabaseMetadata.new(@raw_connection)
-          adapter = database_metadata.adapter_class.new(@raw_connection, deprecated_logger, nil, @config, database_metadata)
-
-          return adapter
-        end
-
-        super(config_or_deprecated_connection, deprecated_logger, deprecated_connection_options, deprecated_config)
+        @database_metadata = ::ODBCAdapter::DatabaseMetadata.new(@raw_connection)
       end
 
       # Returns the human-readable name of the adapter.
