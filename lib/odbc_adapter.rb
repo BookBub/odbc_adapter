@@ -1,24 +1,33 @@
+# Requiring with this pattern to mirror ActiveRecord
+require 'active_record/connection_adapters/odbc_adapter'
+require 'odbc_adapter/adapters/postgresql_odbc_adapter'
+require 'odbc_adapter/adapters/mysql_odbc_adapter'
 if defined?(ActiveSupport)
   ActiveSupport.on_load(:active_record) do
-    # Requiring with this pattern to mirror ActiveRecord
-    require 'active_record/connection_adapters/odbc_adapter'
-
     if ActiveRecord::ConnectionAdapters.respond_to?(:register)
       ActiveRecord::ConnectionAdapters.register(
-        "odbc",
-        "ActiveRecord::ConnectionAdapters::ODBCAdapter",
-        "active_record/connection_adapters/odbc_adapter"
+        "postgres_odbc",
+        "ODBCAdapter::Adapters::PostgreSQLODBCAdapter",
+        "odbc_adapter/adapters/postgresql_odbc_adapter"
+      )
+      ActiveRecord::ConnectionAdapters.register(
+        "mysql_odbc",
+        "ODBCAdapter::Adapters::MySQLODBCAdapter",
+        "odbc_adapter/adapters/mysql_odbc_adapter"
       )
     end
   end
 else
-  # Requiring with this pattern to mirror ActiveRecord
-  require 'active_record/connection_adapters/odbc_adapter'
   if ActiveRecord::ConnectionAdapters.respond_to?(:register)
     ActiveRecord::ConnectionAdapters.register(
-      "odbc",
-      "ActiveRecord::ConnectionAdapters::ODBCAdapter",
-      "active_record/connection_adapters/odbc_adapter"
+      "postgres_odbc",
+      "ODBCAdapter::Adapters::PostgreSQLODBCAdapter",
+      "odbc_adapter/adapters/postgresql_odbc_adapter"
+    )
+    ActiveRecord::ConnectionAdapters.register(
+      "mysql_odbc",
+      "ODBCAdapter::Adapters::MySQLODBCAdapter",
+      "odbc_adapter/adapters/mysql_odbc_adapter"
     )
   end
 end

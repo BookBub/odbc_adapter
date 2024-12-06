@@ -8,16 +8,6 @@ module ODBCAdapter
 
       alias create insert
 
-      def initialize(config_or_deprecated_connection, deprecated_logger = nil, deprecated_connection_options = nil, deprecated_config = nil, database_metadata = nil)
-        super(config_or_deprecated_connection, deprecated_logger, deprecated_connection_options, deprecated_config)
-        puts "PostgreSQLODBCAdapter initialize"
-        @config = deprecated_config
-        @raw_connection = config_or_deprecated_connection
-        @database_metadata = database_metadata
-
-        self
-      end
-
       # Override to handle booleans appropriately
       def native_database_types
         @native_database_types ||= super.merge(boolean: { name: 'bool' })

@@ -5,16 +5,6 @@ module ODBCAdapter
     class MySQLODBCAdapter < ActiveRecord::ConnectionAdapters::ODBCAdapter
       PRIMARY_KEY = 'INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY'.freeze
 
-      def initialize(config_or_deprecated_connection, deprecated_logger = nil, deprecated_connection_options = nil, deprecated_config = nil, database_metadata = nil)
-        super(config_or_deprecated_connection, deprecated_logger, deprecated_connection_options, deprecated_config)
-        puts "MySQLODBCAdapter initialize"
-        @config = deprecated_config
-        @raw_connection = config_or_deprecated_connection
-        @database_metadata = database_metadata
-
-        self
-      end
-
       def arel_visitor
         Arel::Visitors::MySQL.new(self)
       end
