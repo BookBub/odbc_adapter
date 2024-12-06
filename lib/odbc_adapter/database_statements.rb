@@ -162,6 +162,14 @@ module ODBCAdapter
       rows
     end
 
+    def bind_params(binds, sql)
+      prepared_binds = *prepared_binds(binds)
+      prepared_binds.each.with_index(1) do |val, ind|
+        sql = sql.gsub("$#{ind}", "'#{val}'")
+      end
+      sql
+    end
+
     # Assume received identifier is in DBMS's data dictionary case.
     def format_case(identifier)
       if database_metadata.upcase_identifiers?
@@ -208,10 +216,6 @@ module ODBCAdapter
       col_name == 'id' ? false : result
     end
 
-    def prepare_statement_sub(sql)
-      sql.gsub(/\$\d+/, '?')
-    end
-
     def prepared_binds(binds)
       binds.map do |bind|
         if bind.respond_to?(:value_for_database)
@@ -221,16 +225,6 @@ module ODBCAdapter
         end
       end
       .map { |bind| type_cast(bind) }
-      # binds.map(&:value_for_database).map { |bind| _type_cast(bind) }
-    end
-
-    def bind_params(binds, sql)
-      prepared_binds = *prepared_binds(binds)
-      # TODO build more confidence in this actually being right
-      prepared_binds.each.with_index(1) do |val, ind|
-        sql = sql.gsub("$#{ind}", "'#{val}'")
-      end
-      sql
     end
   end
 end
