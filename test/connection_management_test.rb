@@ -2,7 +2,6 @@ require 'test_helper'
 
 class ConnectionManagementTest < Minitest::Test
   def test_connection_management
-    puts "conn #{conn}"
     assert conn.active?
 
     conn.disconnect!
