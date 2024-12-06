@@ -21,9 +21,9 @@ module ODBCAdapter
     # Executes the SQL statement in the context of this connection.
     # Returns the number of rows affected.
     def raw_execute(sql, name, async: false, allow_retry: false, materialize_transactions: true)
-      sql = preprocess_query(sql)
+      # sql = preprocess_query(sql)
       # log(sql, name) do
-        sql = bind_params(binds, sql) if prepared_statements
+      #   sql = bind_params(binds, sql) if prepared_statements
         with_raw_connection do |conn|
           conn.do(sql)
         end
@@ -245,7 +245,7 @@ module ODBCAdapter
       prepared_binds = *prepared_binds(binds)
       # TODO build more confidence in this actually being right
       prepared_binds.each.with_index(1) do |val, ind|
-        sql = sql.sub("?", "'#{val}'")
+        sql = sql.gsub("$#{ind}", "'#{val}'")
       end
       sql
     end

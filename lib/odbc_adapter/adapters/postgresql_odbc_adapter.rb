@@ -9,17 +9,15 @@ module ODBCAdapter
       alias create insert
 
       def initialize(config_or_deprecated_connection, deprecated_logger = nil, deprecated_connection_options = nil, deprecated_config = nil, database_metadata = nil)
+        super(config_or_deprecated_connection, deprecated_logger, deprecated_connection_options, deprecated_config)
         puts "PostgreSQLODBCAdapter initialize"
         @config = deprecated_config
         @raw_connection = config_or_deprecated_connection
         @database_metadata = database_metadata
 
-        puts self
-        reset_transaction
-        @lock = ActiveSupport::Concurrency::NullLock # TODO: I assume this is wrong
+        # We're not calling the super initializer which is the reason for all of the random issues I'm patching above
+        # Specifically these should be defined in AbstractAdapter
 
-
-        # We're not callign the super
         self
       end
 

@@ -33,7 +33,6 @@ module ActiveRecord
       # The object that stores the information that is fetched from the DBMS
       # when a connection is first established.
       attr_reader :database_metadata
-      attr_reader :transaction_manager
 
       # Overriding `new` so we can return a copy of the right subclass from the initializer
       def self.new(*args)
@@ -42,7 +41,8 @@ module ActiveRecord
       end
 
       def initialize(config_or_deprecated_connection, deprecated_logger = nil, deprecated_connection_options = nil, deprecated_config = nil)
-        super(config_or_deprecated_connection, deprecated_logger, deprecated_connection_options, deprecated_config)
+
+
         @config = deprecated_config
         if config_or_deprecated_connection.try(:get_info, ODBC.const_get("SQL_DBMS_NAME"))
           @raw_connection = config_or_deprecated_connection
@@ -56,10 +56,14 @@ module ActiveRecord
         end
         @connection ||= @raw_connection
 
-        database_metadata ||= ::ODBCAdapter::DatabaseMetadata.new(@raw_connection)
-        adapter = database_metadata.adapter_class.new(@raw_connection, logger, nil, @config, database_metadata)
+        if self.class.name == "ActiveRecord::ConnectionAdapters::ODBCAdapter"
+          database_metadata = ::ODBCAdapter::DatabaseMetadata.new(@raw_connection)
+          adapter = database_metadata.adapter_class.new(@raw_connection, deprecated_logger, nil, @config, database_metadata)
 
-        adapter
+          return adapter
+        end
+
+        super(config_or_deprecated_connection, deprecated_logger, deprecated_connection_options, deprecated_config)
       end
 
       # Returns the human-readable name of the adapter.
