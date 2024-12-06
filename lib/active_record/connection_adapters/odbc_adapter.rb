@@ -74,7 +74,7 @@ module ActiveRecord
       # includes checking whether the database is actually capable of
       # responding, i.e. whether the connection isn't stale.
       def active?
-        connected?
+        @raw_connection.connected?
       end
 
       # establishes a new connection with the database.
@@ -85,6 +85,8 @@ module ActiveRecord
           else
             ODBC::Database.new.drvconnect(@config[:driver])
           end
+        configure_time_options(@raw_connection)
+        @raw_connection
       end
 
       # Disconnects from the database if already connected, and establishes a
@@ -92,7 +94,6 @@ module ActiveRecord
       def reconnect
         disconnect!
         connect
-        configure_time_options(@raw_connection)
       end
       alias reset! reconnect!
 

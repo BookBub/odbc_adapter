@@ -131,10 +131,6 @@ module ODBCAdapter
         "DISTINCT #{columns}, #{order_columns * ', '}"
       end
 
-      def connected?
-        !@raw_connection.nil?
-      end
-
       protected
 
       # Executes an INSERT query and returns the new record's ID
