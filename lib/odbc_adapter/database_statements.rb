@@ -5,29 +5,13 @@ module ODBCAdapter
     SQL_NULLABLE = 1
     SQL_NULLABLE_UNKNOWN = 2
 
-    def preprocess_query(sql)
-      # check_if_write_query(sql)
-      # mark_transaction_written_if_write(sql)
-      #
-      # # We call transformers after the write checks so we don't add extra parsing work.
-      # ActiveRecord.query_transformers.each do |transformer|
-      #   sql = transformer.call(sql, self)
-      # end
-      # TODO Do we want to preprocess?
-
-      sql
-    end
-
     # Executes the SQL statement in the context of this connection.
     # Returns the number of rows affected.
-    def raw_execute(sql, name, async: false, allow_retry: false, materialize_transactions: true)
-      # sql = preprocess_query(sql)
-      # log(sql, name) do
-      #   sql = bind_params(binds, sql) if prepared_statements
-        with_raw_connection do |conn|
-          conn.do(sql)
-        end
-      # end
+    def execute(sql, name = nil, binds = [])
+      log(sql, name) do
+        sql = bind_params(binds, sql) if prepared_statements
+        @raw_connection.do(sql)
+      end
     end
 
     # Executes an INSERT query and returns the new record's ID
@@ -47,7 +31,6 @@ module ODBCAdapter
       attrs = @config[:conn_str].split(';').map { |option| option.split('=', 2) }.to_h
       odbc_module = attrs['ENCODING'] == 'utf8' ? ODBC_UTF8 : ODBC
 
-      sql = preprocess_query(sql)
       log(sql, name) do
         sql = bind_params(binds, sql) if prepared_statements
         begin

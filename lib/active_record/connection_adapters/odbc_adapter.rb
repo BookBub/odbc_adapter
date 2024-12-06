@@ -57,10 +57,6 @@ module ActiveRecord
         ADAPTER_NAME
       end
 
-      def primary_key_type
-        'SERIAL PRIMARY KEY' # TODO: Set per adapater type
-      end
-
       # Does this adapter support migrations? Backend specific, as the abstract
       # adapter always returns +false+.
       def supports_migrations?
@@ -114,12 +110,11 @@ module ActiveRecord
 
       # Disconnects from the database if already connected. Otherwise, this
       # method does nothing.
-      # def disconnect!
-      #   with_raw_connection do |connection|
-      #     puts "disconnect! - connected? #{connection.connected?}"
-      #     connection.disconnect if connection.connected?
-      #   end
-      # end
+      def disconnect!
+        with_raw_connection do |connection|
+          connection.disconnect if connection.connected?
+        end
+      end
 
       protected
 

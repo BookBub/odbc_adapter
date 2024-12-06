@@ -137,10 +137,6 @@ module ODBCAdapter
         super(options)
       end
 
-      def primary_key_type
-        PRIMARY_KEY
-      end
-
       protected
 
       def insert_sql(sql, name = nil, pk = nil, id_value = nil, sequence_name = nil)
