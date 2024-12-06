@@ -15,9 +15,6 @@ module ODBCAdapter
         @raw_connection = config_or_deprecated_connection
         @database_metadata = database_metadata
 
-        # We're not calling the super initializer which is the reason for all of the random issues I'm patching above
-        # Specifically these should be defined in AbstractAdapter
-
         self
       end
 
