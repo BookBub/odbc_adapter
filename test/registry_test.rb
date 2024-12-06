@@ -17,7 +17,9 @@ class RegistryTest < Minitest::Test
   def register_foobar(registry)
     require File.join('odbc_adapter', 'adapters', 'mysql_odbc_adapter')
     registry.register(/foobar/, ODBCAdapter::Adapters::MySQLODBCAdapter) do
-      def initialize() end
+      def initialize(*args)
+        return self # TODO: unroll this
+      end
 
       def quoted_true
         'foobar'
