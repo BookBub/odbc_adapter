@@ -8,6 +8,21 @@ module ODBCAdapter
 
       alias create insert
 
+      def initialize(config_or_deprecated_connection, deprecated_logger = nil, deprecated_connection_options = nil, deprecated_config = nil, database_metadata = nil)
+        puts "PostgreSQLODBCAdapter initialize"
+        @config = deprecated_config
+        @raw_connection = config_or_deprecated_connection
+        @database_metadata = database_metadata
+
+        puts self
+        reset_transaction
+        @lock = ActiveSupport::Concurrency::NullLock # TODO: I assume this is wrong
+
+
+        # We're not callign the super
+        self
+      end
+
       # Override to handle booleans appropriately
       def native_database_types
         @native_database_types ||= super.merge(boolean: { name: 'bool' })
@@ -136,6 +151,7 @@ module ODBCAdapter
       end
 
       def connected?
+        puts "connected? #{!@raw_connection.nil?}"
         !@raw_connection.nil?
       end
 

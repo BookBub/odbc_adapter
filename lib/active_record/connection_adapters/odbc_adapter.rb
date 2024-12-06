@@ -16,21 +16,6 @@ require 'odbc_adapter/registry'
 require 'odbc_adapter/version'
 
 module ActiveRecord
-  class Base
-    class << self
-      # Build a new ODBC connection with the given configuration.
-      def odbc_connection(config)
-        config = config.symbolize_keys
-        setup = ::ODBCAdapter::ConnectionSetup.new(config.symbolize_keys)
-        setup.build
-        @config = setup.config
-
-        database_metadata = ::ODBCAdapter::DatabaseMetadata.new(setup.connection)
-        database_metadata.adapter_class.new(setup.connection, logger, nil, setup.config, database_metadata)
-      end
-    end
-  end
-
   module ConnectionAdapters
     class ODBCAdapter < AbstractAdapter
       include ::ODBCAdapter::DatabaseLimits
@@ -48,24 +33,33 @@ module ActiveRecord
       # The object that stores the information that is fetched from the DBMS
       # when a connection is first established.
       attr_reader :database_metadata
+      attr_reader :transaction_manager
 
-      def initialize(config_or_deprecated_connection, deprecated_logger = nil, deprecated_connection_options = nil, deprecated_config = nil, database_metadata = nil)
+      # Overriding `new` so we can return a copy of the right subclass from the initializer
+      def self.new(*args)
+        obj=allocate
+        obj.send(:initialize, *args)
+      end
+
+      def initialize(config_or_deprecated_connection, deprecated_logger = nil, deprecated_connection_options = nil, deprecated_config = nil)
         super(config_or_deprecated_connection, deprecated_logger, deprecated_connection_options, deprecated_config)
-        if config_or_deprecated_connection
+        @config = deprecated_config
+        if config_or_deprecated_connection.try(:get_info, ODBC.const_get("SQL_DBMS_NAME"))
+          @raw_connection = config_or_deprecated_connection
+          @config = deprecated_config
+        else
           config = config_or_deprecated_connection
           setup = ::ODBCAdapter::ConnectionSetup.new(config.symbolize_keys)
           setup.build
           @config = setup.config
+          connect
         end
-        connect
         @connection ||= @raw_connection
 
+        database_metadata ||= ::ODBCAdapter::DatabaseMetadata.new(@raw_connection)
+        adapter = database_metadata.adapter_class.new(@raw_connection, logger, nil, @config, database_metadata)
 
-        if database_metadata
-          @database_metadata = database_metadata
-        else
-          @database_metadata = ::ODBCAdapter::DatabaseMetadata.new(@raw_connection)
-        end
+        adapter
       end
 
       # Returns the human-readable name of the adapter.
@@ -130,11 +124,12 @@ module ActiveRecord
 
       # Disconnects from the database if already connected. Otherwise, this
       # method does nothing.
-      def disconnect!
-        with_raw_connection do |connection|
-          connection.disconnect if connection.connected?
-        end
-      end
+      # def disconnect!
+      #   with_raw_connection do |connection|
+      #     puts "disconnect! - connected? #{connection.connected?}"
+      #     connection.disconnect if connection.connected?
+      #   end
+      # end
 
       protected
 
