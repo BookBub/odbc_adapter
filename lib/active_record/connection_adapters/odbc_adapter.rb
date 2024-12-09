@@ -16,6 +16,21 @@ require 'odbc_adapter/registry'
 require 'odbc_adapter/version'
 
 module ActiveRecord
+  # Deprecated: Provides backwards-compatible support for Rails 7.1
+  class Base
+    class << self
+      # Build a new ODBC connection with the given configuration.
+      def odbc_connection(config)
+        config = config.symbolize_keys
+        setup = ::ODBCAdapter::ConnectionSetup.new(config.symbolize_keys)
+        setup.build
+
+        database_metadata = ::ODBCAdapter::DatabaseMetadata.new(setup.connection)
+        database_metadata.adapter_class.new(setup.connection, logger, nil, setup.config, database_metadata)
+      end
+    end
+  end
+
   module ConnectionAdapters
     class ODBCAdapter < AbstractAdapter
       include ::ODBCAdapter::DatabaseLimits
