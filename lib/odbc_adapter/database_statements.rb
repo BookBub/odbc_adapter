@@ -131,12 +131,7 @@ module ODBCAdapter
                       when [ODBC::SQL_TIME, ODBC::SQL_TYPE_TIME].include?(column.type)
                         value.to_time
                       when [ODBC::SQL_DATETIME, ODBC::SQL_TIMESTAMP, ODBC::SQL_TYPE_TIMESTAMP].include?(column.type)
-                        # TODO: Why?
-                        if value.instance_of? ODBC::TimeStamp
-                          ODBC::to_time(value)
-                        else
-                          value.to_datetime
-                        end
+                        value.to_datetime
                       # when ["ARRAY"?, "OBJECT"?, "VARIANT"?].include?(column.type)
                         # TODO: "ARRAY", "OBJECT", "VARIANT" all return as VARCHAR
                         # so we'd need to parse them to make them the correct type
