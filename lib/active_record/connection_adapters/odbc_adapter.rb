@@ -40,6 +40,7 @@ module ActiveRecord
         if config_or_deprecated_connection.try(:get_info, ODBC.const_get("SQL_DBMS_NAME"))
           @raw_connection = config_or_deprecated_connection
           @config = deprecated_config
+          configure_time_options(@raw_connection)
         else
           config = config_or_deprecated_connection
           setup = ::ODBCAdapter::ConnectionSetup.new(config.symbolize_keys)
@@ -47,7 +48,6 @@ module ActiveRecord
           @config = setup.config
           connect
         end
-        @connection ||= @raw_connection
 
         @database_metadata = ::ODBCAdapter::DatabaseMetadata.new(@raw_connection)
       end
