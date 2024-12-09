@@ -26,6 +26,11 @@ if defined?(ActiveSupport)
 else
   if ActiveRecord::ConnectionAdapters.respond_to?(:register)
     ActiveRecord::ConnectionAdapters.register(
+      "odbc",
+      "ODBCAdapter::Adapters::NullODBCAdapter",
+      "odbc_adapter/adapters/null_odbc_adapter"
+    )
+    ActiveRecord::ConnectionAdapters.register(
       "postgres_odbc",
       "ODBCAdapter::Adapters::PostgreSQLODBCAdapter",
       "odbc_adapter/adapters/postgresql_odbc_adapter"
