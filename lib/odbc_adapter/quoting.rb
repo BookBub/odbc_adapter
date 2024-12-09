@@ -1,6 +1,5 @@
 module ODBCAdapter
   module Quoting
-    extend ActiveSupport::Concern
 
     # Quotes a string, escaping any ' (single quote) characters.
     def quote_string(string)
