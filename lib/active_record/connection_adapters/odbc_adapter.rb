@@ -51,7 +51,6 @@ module ActiveRecord
 
       def initialize(config_or_deprecated_connection, deprecated_logger = nil, deprecated_connection_options = nil, deprecated_config = nil, database_metadata = nil)
         super(config_or_deprecated_connection, deprecated_logger, deprecated_connection_options, deprecated_config)
-        @config = deprecated_config
         if config_or_deprecated_connection.try(:get_info, ODBC.const_get("SQL_DBMS_NAME"))
           @raw_connection = config_or_deprecated_connection
           @config = deprecated_config
