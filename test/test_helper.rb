@@ -6,7 +6,7 @@ require 'odbc_adapter'
 
 require 'minitest/autorun'
 
-options = { adapter: 'postgres_odbc' }
+options = { adapter: ActiveRecord::VERSION::MAJOR <= 7 && ActiveRecord::VERSION::MINOR <= 1 ? 'odbc' : 'postgres_odbc' }
 options[:conn_str] = ENV['CONN_STR'] if ENV['CONN_STR']
 options[:dsn]      = ENV['DSN'] if ENV['DSN']
 options[:dsn]      = 'ODBCAdapterPostgreSQLTest' if options.values_at(:conn_str, :dsn).compact.empty?
