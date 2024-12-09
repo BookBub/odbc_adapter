@@ -1,5 +1,9 @@
+require "pg"
+
 module ODBCAdapter
   module Adapters
+    QUOTED_COLUMN_NAMES = Concurrent::Map.new
+
     # Overrides specific to PostgreSQL. Mostly taken from
     # ActiveRecord::ConnectionAdapters::PostgreSQLAdapter
     class PostgreSQLODBCAdapter < ActiveRecord::ConnectionAdapters::ODBCAdapter
@@ -31,6 +35,11 @@ module ODBCAdapter
       # specified key.
       def default_sequence_name(table_name, pk = nil)
         "#{table_name}_#{pk || 'id'}_seq"
+      end
+
+      # Quotes column names for use in SQL queries.
+      def self.quote_column_name(name)
+        QUOTED_COLUMN_NAMES[name] ||= PG::Connection.quote_ident(name.to_s).freeze
       end
 
       # Quotes a string, escaping any ' (single quote) and \ (backslash)
