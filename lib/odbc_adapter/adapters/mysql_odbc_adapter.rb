@@ -1,5 +1,7 @@
 module ODBCAdapter
   module Adapters
+    QUOTED_COLUMN_NAMES = Concurrent::Map.new
+
     # Overrides specific to MySQL. Mostly taken from
     # ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter
     class MySQLODBCAdapter < ActiveRecord::ConnectionAdapters::ODBCAdapter
@@ -21,6 +23,10 @@ module ODBCAdapter
 
       def truncate(table_name, name = nil)
         execute("TRUNCATE TABLE #{quote_table_name(table_name)}", name)
+      end
+
+      def self.quote_column_name(name)
+        QUOTED_COLUMN_NAMES[name] ||= "`#{name.to_s.gsub('`', '``')}`".freeze
       end
 
       # Quotes a string, escaping any ' (single quote) and \ (backslash)
