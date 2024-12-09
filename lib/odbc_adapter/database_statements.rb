@@ -30,7 +30,7 @@ module ODBCAdapter
     def internal_exec_query(sql, name = 'SQL', binds = [], prepare: false, allow_retry: false) # rubocop:disable Lint/UnusedMethodArgument
       log(sql, name) do
         sql = bind_params(binds, sql) if prepared_statements
-        stmt = @raw_connection.run(sql)
+        stmt =  @raw_connection.run(sql)
 
         columns = stmt.columns
         values  = stmt.to_a

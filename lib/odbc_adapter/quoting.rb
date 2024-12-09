@@ -1,6 +1,5 @@
 module ODBCAdapter
   module Quoting
-
     # Quotes a string, escaping any ' (single quote) characters.
     def quote_string(string)
       string.gsub(/\'/, "''")
