@@ -92,7 +92,7 @@ module ActiveRecord
         @raw_connection.connected?
       end
 
-      # establishes a new connection with the database.
+      # Establishes a new connection with the database.
       def connect
         @raw_connection =
           if @config.key?(:dsn)
@@ -101,7 +101,6 @@ module ActiveRecord
             ODBC::Database.new.drvconnect(@config[:driver])
           end
         configure_time_options(@raw_connection)
-        @raw_connection
       end
 
       # Disconnects from the database if already connected, and establishes a
@@ -111,6 +110,12 @@ module ActiveRecord
         connect
       end
       alias reset! reconnect!
+
+      # Disconnects from the database if already connected. Otherwise, this
+      # method does nothing.
+      def disconnect!
+        @raw_connection.disconnect if @raw_connection.connected?
+      end
 
       # Build a new column object from the given options. Effectively the same
       # as super except that it also passes in the native type.
@@ -122,14 +127,6 @@ module ActiveRecord
       # odbc_adapter does not support returning, so there are no return values from an insert
       def return_value_after_insert?(column) # :nodoc:
         false
-      end
-
-      # Disconnects from the database if already connected. Otherwise, this
-      # method does nothing.
-      def disconnect!
-        with_raw_connection do |connection|
-          connection.disconnect if connection.connected?
-        end
       end
 
       protected
@@ -180,9 +177,7 @@ module ActiveRecord
 
       # Ensure ODBC is mapping time-based fields to native ruby objects
       def configure_time_options(connection)
-        if connection.respond_to?(:use_time)
-          connection.use_time = true
-        end
+        connection.use_time = true
       end
     end
   end
