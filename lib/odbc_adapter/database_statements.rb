@@ -224,7 +224,7 @@ module ODBCAdapter
           bind
         end
       end
-       .map { |bind| type_cast(bind) }
+        .map { |bind| type_cast(bind) }
     end
   end
 end
