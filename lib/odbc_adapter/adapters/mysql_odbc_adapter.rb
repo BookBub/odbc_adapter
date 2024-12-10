@@ -1,11 +1,10 @@
 module ODBCAdapter
   module Adapters
-    QUOTED_COLUMN_NAMES = Concurrent::Map.new
-
     # Overrides specific to MySQL. Mostly taken from
     # ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter
     class MySQLODBCAdapter < ActiveRecord::ConnectionAdapters::ODBCAdapter
       PRIMARY_KEY = 'INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY'.freeze
+      QUOTED_COLUMN_NAMES = Concurrent::Map.new
 
       def arel_visitor
         Arel::Visitors::MySQL.new(self)

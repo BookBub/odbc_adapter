@@ -2,13 +2,12 @@ require "pg"
 
 module ODBCAdapter
   module Adapters
-    QUOTED_COLUMN_NAMES = Concurrent::Map.new
-
     # Overrides specific to PostgreSQL. Mostly taken from
     # ActiveRecord::ConnectionAdapters::PostgreSQLAdapter
     class PostgreSQLODBCAdapter < ActiveRecord::ConnectionAdapters::ODBCAdapter
       BOOLEAN_TYPE = 'bool'.freeze
       PRIMARY_KEY  = 'SERIAL PRIMARY KEY'.freeze
+      QUOTED_COLUMN_NAMES = Concurrent::Map.new
 
       alias create insert
 
