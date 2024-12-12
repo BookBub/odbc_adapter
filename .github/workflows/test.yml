@@ -29,13 +29,13 @@ jobs:
       BUNDLE_PATH_RELATIVE_TO_CWD: true
     steps:
       - uses: actions/checkout@v3
+      - name: Install ODBC drivers
+        run: sudo apt-get install unixodbc unixodbc-dev odbc-postgresql
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
           ruby-version: ${{ matrix.ruby }}
-      - name: Install ODBC drivers
-        run: sudo apt-get install unixodbc unixodbc-dev odbc-postgresql
       - name: Install dependencies
         run: bundle install
       - name: driver setup
