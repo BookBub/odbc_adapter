@@ -1,3 +1,7 @@
+# Pending
+
+* Explicitly support Rails 8.0
+
 # 10.1.0
 
 * Adds backwards-compatible support for Rails 7.2
