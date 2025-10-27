@@ -1,5 +1,6 @@
 # Pending
 
+* Explicitly support Rails 8.1
 * Explicitly support Rails 8.0
 
 # 10.1.0
