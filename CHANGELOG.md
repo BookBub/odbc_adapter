@@ -1,5 +1,6 @@
 # Pending
 
+* Test against Ruby 3.3.
 * Explicitly support Rails 8.0
 
 # 10.1.0
