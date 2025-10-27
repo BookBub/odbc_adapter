@@ -74,8 +74,9 @@ module ODBCAdapter
         # SQLColumns: IS_NULLABLE, SQLColumns: NULLABLE
         col_nullable = nullability(col_name, col[17], col[10])
 
+        is_boolean = col_native_type == self.class::BOOLEAN_TYPE
         args = { sql_type: col_sql_type, type: col_sql_type, limit: col_limit }
-        args[:sql_type] = 'boolean' if col_native_type == self.class::BOOLEAN_TYPE
+        args[:sql_type] = 'boolean' if is_boolean
 
         if [ODBC::SQL_DECIMAL, ODBC::SQL_NUMERIC].include?(col_sql_type)
           args[:scale]     = col_scale || 0
@@ -83,7 +84,13 @@ module ODBCAdapter
         end
         sql_type_metadata = ActiveRecord::ConnectionAdapters::SqlTypeMetadata.new(**args)
 
-        cols << new_column(format_case(col_name), col_default, sql_type_metadata, col_nullable, col_native_type)
+        if ODBCAdapter::BEFORE_RAILS_8_1
+          cols << new_column(format_case(col_name), col_default, sql_type_metadata, col_nullable, col_native_type)
+        else
+          # Rails 8.1+ requires cast_type as the second argument
+          cast_type = lookup_cast_type(is_boolean ? 'boolean' : col_sql_type)
+          cols << new_column(format_case(col_name), cast_type, col_default, sql_type_metadata, col_nullable, col_native_type)
+        end
       end
     end
 

@@ -1,5 +1,6 @@
 # Pending
 
+* Explicitly support Rails 8.1
 * Drop support for Rails 7.1
 * Drop support for Ruby 3.2.
 * Test against Ruby 3.4.
