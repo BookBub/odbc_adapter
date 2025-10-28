@@ -1,5 +1,6 @@
 # Pending
 
+* Drop support for Ruby 3.2.
 * Test against Ruby 3.4.
 * Test against Ruby 3.3.
 * Explicitly support Rails 8.0
