@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby: [3.2, 3.3]
+        ruby: [3.2, 3.3, 3.4]
         gemfile: [ar_7_1, ar_7_2, ar_8_0]
     services:
       postgres:
