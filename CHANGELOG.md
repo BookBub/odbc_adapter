@@ -1,11 +1,13 @@
 # Pending
 
-* Explicitly support Rails 8.1
+# 11.0.0
+
 * Drop support for Rails 7.1
 * Drop support for Ruby 3.2.
-* Test against Ruby 3.4.
 * Test against Ruby 3.3.
+* Test against Ruby 3.4.
 * Explicitly support Rails 8.0
+* Explicitly support Rails 8.1
 
 # 10.1.0
 
