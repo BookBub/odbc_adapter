@@ -12,7 +12,7 @@ jobs:
       fail-fast: false
       matrix:
         ruby: [3.3, 3.4]
-        gemfile: [ar_7_2, ar_8_0]
+        gemfile: [ar_7_2, ar_8_0, ar_8_1]
     services:
       postgres:
         image: postgres:16

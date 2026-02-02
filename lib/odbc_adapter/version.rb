@@ -7,5 +7,5 @@ module ODBCAdapter
   # - Create a tag for this release:
   #   1. `git tag v{YOUR-VERSION-NUMBER}`
   #   2. `git push origin --tags`
-  VERSION = '10.1.0'.freeze
+  VERSION = '11.0.0'.freeze
 end

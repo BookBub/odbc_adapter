@@ -2,6 +2,12 @@ require 'active_record'
 require 'arel/visitors/visitor'
 require 'odbc'
 
+# Define version constant before loading other modules that depend on it
+module ODBCAdapter
+  BEFORE_RAILS_8_1 = ActiveRecord::VERSION::MAJOR < 8 ||
+    (ActiveRecord::VERSION::MAJOR == 8 && ActiveRecord::VERSION::MINOR < 1)
+end
+
 require 'odbc_adapter/database_limits'
 require 'odbc_adapter/database_statements'
 require 'odbc_adapter/error'
@@ -119,8 +125,14 @@ module ActiveRecord
       # Build a new column object from the given options. Effectively the same
       # as super except that it also passes in the native type.
       # rubocop:disable Metrics/ParameterLists
-      def new_column(name, default, sql_type_metadata, null, native_type = nil)
-        ::ODBCAdapter::Column.new(name, default, sql_type_metadata, null, native_type)
+      if ::ODBCAdapter::BEFORE_RAILS_8_1
+        def new_column(name, default, sql_type_metadata, null, native_type = nil)
+          ::ODBCAdapter::Column.new(name, default, sql_type_metadata, null, native_type)
+        end
+      else
+        def new_column(name, cast_type, default, sql_type_metadata, null, native_type = nil)
+          ::ODBCAdapter::Column.new(name, cast_type, default, sql_type_metadata, null, native_type)
+        end
       end
 
       # odbc_adapter does not support returning, so there are no return values from an insert

@@ -5,9 +5,16 @@ module ODBCAdapter
     # Add the native_type accessor to allow the native DBMS to report back what
     # it uses to represent the column internally.
     # rubocop:disable Metrics/ParameterLists
-    def initialize(name, default, sql_type_metadata = nil, null = true, native_type = nil, **kwargs)
-      super(name, default, sql_type_metadata, null, **kwargs)
-      @native_type = native_type
+    if ODBCAdapter::BEFORE_RAILS_8_1
+      def initialize(name, default, sql_type_metadata = nil, null = true, native_type = nil, **kwargs)
+        super(name, default, sql_type_metadata, null, **kwargs)
+        @native_type = native_type
+      end
+    else
+      def initialize(name, cast_type, default, sql_type_metadata = nil, null = true, native_type = nil, **kwargs)
+        super(name, cast_type, default, sql_type_metadata, null, **kwargs)
+        @native_type = native_type
+      end
     end
   end
 end
